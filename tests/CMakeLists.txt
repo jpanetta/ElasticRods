@@ -1,0 +1,48 @@
+add_executable(test_tridiagonal_system test_tridiagonal_system.cc)
+set_target_properties(test_tridiagonal_system PROPERTIES CXX_STANDARD 14)
+set_target_properties(test_tridiagonal_system PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+add_executable(test_elastic_rods test_elastic_rods.cc)
+target_link_libraries(test_elastic_rods ElasticRods)
+set_target_properties(test_elastic_rods PROPERTIES CXX_STANDARD 14)
+set_target_properties(test_elastic_rods PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+add_executable(test_elastic_rod_linkage test_elastic_rod_linkage.cc)
+target_link_libraries(test_elastic_rod_linkage RodLinkages)
+set_target_properties(test_elastic_rod_linkage PROPERTIES CXX_STANDARD 14)
+set_target_properties(test_elastic_rod_linkage PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+add_executable(test_linkage_hessian_matvec test_linkage_hessian_matvec.cc)
+target_link_libraries(test_linkage_hessian_matvec RodLinkages)
+set_target_properties(test_linkage_hessian_matvec PROPERTIES CXX_STANDARD 14)
+set_target_properties(test_linkage_hessian_matvec PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+add_executable(test_linkage_optimization test_linkage_optimization.cc)
+target_link_libraries(test_linkage_optimization RodLinkages)
+set_target_properties(test_linkage_optimization PROPERTIES CXX_STANDARD 14)
+set_target_properties(test_linkage_optimization PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+add_executable(test_cg test_cg.cc)
+target_link_libraries(test_cg ElasticRods)
+set_target_properties(test_cg PROPERTIES CXX_STANDARD 14)
+set_target_properties(test_cg PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+add_executable(test_rod_material test_rod_material.cc)
+target_link_libraries(test_rod_material ElasticRods)
+set_target_properties(test_rod_material PROPERTIES CXX_STANDARD 14)
+set_target_properties(test_rod_material PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+add_executable(test_rl_solve test_rl_solve.cc)
+target_link_libraries(test_rl_solve RodLinkages)
+set_target_properties(test_rl_solve PROPERTIES CXX_STANDARD 14)
+set_target_properties(test_rl_solve PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+add_executable(test_actuation_sparsifier test_actuation_sparsifier.cc)
+target_link_libraries(test_actuation_sparsifier RodLinkages)
+set_target_properties(test_actuation_sparsifier PROPERTIES CXX_STANDARD 14)
+set_target_properties(test_actuation_sparsifier PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+add_executable(test_grasshopper_bindings test_grasshopper_bindings.cc)
+target_link_libraries(test_grasshopper_bindings grasshopper_bindings)
+set_target_properties(test_grasshopper_bindings PROPERTIES CXX_STANDARD 14)
+set_target_properties(test_grasshopper_bindings PROPERTIES CXX_STANDARD_REQUIRED ON)

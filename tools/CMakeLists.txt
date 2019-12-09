@@ -1,0 +1,21 @@
+add_executable(analyze_rod_profile analyze_rod_profile.cc)
+target_link_libraries(analyze_rod_profile ElasticRods)
+set_target_properties(analyze_rod_profile PROPERTIES CXX_STANDARD 14)
+set_target_properties(analyze_rod_profile PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+add_executable(visualize_twist_deformation visualize_twist_deformation.cc)
+target_link_libraries(visualize_twist_deformation ElasticRods)
+set_target_properties(visualize_twist_deformation PROPERTIES CXX_STANDARD 14)
+set_target_properties(visualize_twist_deformation PROPERTIES CXX_STANDARD_REQUIRED ON)
+
+if(KNITRO_FOUND)
+    add_executable(actuation_sparsifier actuation_sparsifier.cc)
+    target_link_libraries(actuation_sparsifier RodLinkages )
+    set_target_properties(actuation_sparsifier PROPERTIES CXX_STANDARD 14)
+    set_target_properties(actuation_sparsifier PROPERTIES CXX_STANDARD_REQUIRED ON)
+endif()
+
+add_executable(open_linkage open_linkage.cc)
+target_link_libraries(open_linkage RodLinkages )
+set_target_properties(open_linkage PROPERTIES CXX_STANDARD 14)
+set_target_properties(open_linkage PROPERTIES CXX_STANDARD_REQUIRED ON)

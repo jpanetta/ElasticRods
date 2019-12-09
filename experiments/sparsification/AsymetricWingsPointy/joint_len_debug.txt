@@ -1,0 +1,314 @@
+Setting rlens 22.8322 15.5506
+segmentsA: 3 4,  segmentsB:0 18446744073709551615	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 20.9742  15.392
+segmentsA: 1 6,  segmentsB:0 7	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 14.5628 13.7537
+segmentsA: 1 129,  segmentsB:9 2	isStartA:  0 0,  isStartB: 0 1
+Setting rlens 15.3305 13.7537
+segmentsA: 3 131,  segmentsB:2 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 23.2886 17.9357
+segmentsA: 4 198,  segmentsB:5 18446744073709551615	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 20.9742  17.482
+segmentsA: 6 196,  segmentsB:5 10	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 18.9549  15.392
+segmentsA: 8 11,  segmentsB:7 12	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 13.9566 13.8567
+segmentsA: 8 127,  segmentsB:14 9	isStartA:  0 0,  isStartB: 0 1
+Setting rlens 18.9549  17.482
+segmentsA: 11 194,  segmentsB:10 15	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 17.1499 12.9441
+segmentsA: 13 16,  segmentsB:12 17	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 13.5418 12.1735
+segmentsA: 13 125,  segmentsB:19 14	isStartA:  0 0,  isStartB: 0 1
+Setting rlens 17.1499 14.1215
+segmentsA: 16 140,  segmentsB:15 20	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 16.0174 12.9441
+segmentsA: 18 21,  segmentsB:17 22	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 13.3988 12.1735
+segmentsA: 18 89,  segmentsB:24 19	isStartA:  0 0,  isStartB: 0 1
+Setting rlens 16.0174 14.1215
+segmentsA: 21 85,  segmentsB:20 25	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 15.1876 14.2351
+segmentsA: 23 26,  segmentsB:22 27	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 13.5466 13.7734
+segmentsA: 23 87,  segmentsB:24 29	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 15.1068 15.1043
+segmentsA: 26 84,  segmentsB:25 30	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 14.9536 14.9585
+segmentsA: 28 31,  segmentsB:27 32	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 14.104 15.078
+segmentsA: 28 90,  segmentsB:29 34	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 14.2372 15.1924
+segmentsA: 31 86,  segmentsB:30 35	isStartA:  1 0,  isStartB: 0 1
+Setting rlens  15.073 14.1053
+segmentsA: 36 33,  segmentsB:32 37	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 15.6563  15.658
+segmentsA: 33 122,  segmentsB:34 39	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 13.7755 13.5478
+segmentsA: 159 36,  segmentsB:35 40	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 15.5636 14.1053
+segmentsA: 41 38,  segmentsB:37 42	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 17.6629  15.658
+segmentsA: 38 120,  segmentsB:39 44	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 13.8188 13.5478
+segmentsA: 177 41,  segmentsB:40 45	isStartA:  0 1,  isStartB: 0 1
+Setting rlens  16.409 13.5205
+segmentsA: 46 43,  segmentsB:42 47	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 20.2113 15.8214
+segmentsA: 43 118,  segmentsB:44 49	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 14.1258 12.3891
+segmentsA: 191 46,  segmentsB:45 50	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 17.4442 13.5205
+segmentsA: 51 48,  segmentsB:47 52	isStartA:  0 1,  isStartB: 0 1
+Setting rlens  22.741 15.8214
+segmentsA: 48 116,  segmentsB:49 54	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 14.5992 12.3891
+segmentsA: 189 51,  segmentsB:50 55	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 18.7604 14.6503
+segmentsA: 56 53,  segmentsB:52 57	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 25.3854 17.4198
+segmentsA: 53 114,  segmentsB:54 59	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 15.3074 13.2221
+segmentsA: 186 56,  segmentsB:55 60	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 20.4894 17.6105
+segmentsA: 58 61,  segmentsB:57 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 27.9135 21.0923
+segmentsA: 58 112,  segmentsB:59 18446744073709551615	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 16.2567 15.7754
+segmentsA: 61 188,  segmentsB:60 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 17.9291 23.2949
+segmentsA: 62 18446744073709551615,  segmentsB:65 66	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 17.5042 20.9814
+segmentsA: 62 69,  segmentsB:68 63	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 20.4049 23.8326
+segmentsA: 71 64,  segmentsB:63 147	isStartA:  0 1,  isStartB: 0 0
+Setting rlens  21.126 26.9995
+segmentsA: 64 18446744073709551615,  segmentsB:65 149	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 15.5449 22.8304
+segmentsA: 67 18446744073709551615,  segmentsB:66 150	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 15.4112 20.9814
+segmentsA: 67 72,  segmentsB:152 68	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 17.5042 18.9591
+segmentsA: 69 74,  segmentsB:73 70	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 20.4049 20.9456
+segmentsA: 71 76,  segmentsB:70 145	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 15.4112 18.9591
+segmentsA: 72 77,  segmentsB:154 73	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 14.1247 17.1558
+segmentsA: 74 79,  segmentsB:78 75	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 15.8875 18.0015
+segmentsA: 81 76,  segmentsB:75 143	isStartA:  0 1,  isStartB: 0 0
+Setting rlens 12.9466 17.1558
+segmentsA: 77 82,  segmentsB:156 78	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 14.1247 16.0227
+segmentsA: 79 84,  segmentsB:83 80	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 15.8875 15.8838
+segmentsA: 85 81,  segmentsB:80 141	isStartA:  0 1,  isStartB: 0 0
+Setting rlens 12.9466 16.0227
+segmentsA: 82 86,  segmentsB:158 83	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 13.5466 13.8165
+segmentsA: 87 92,  segmentsB:88 91	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 13.2549 11.9106
+segmentsA: 89 94,  segmentsB:88 124	isStartA:  1 0,  isStartB: 0 1
+Setting rlens  14.104 15.5687
+segmentsA: 90 95,  segmentsB:91 123	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 12.3942 14.1232
+segmentsA: 92 97,  segmentsB:93 96	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 11.8039 11.8939
+segmentsA: 94 99,  segmentsB:93 138	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 13.5263  16.414
+segmentsA: 95 100,  segmentsB:96 161	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 12.3942 14.5965
+segmentsA: 97 102,  segmentsB:98 101	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 11.8039  12.016
+segmentsA: 99 104,  segmentsB:98 136	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 13.5263 17.4499
+segmentsA: 100 105,  segmentsB:101 163	isStartA:  0 1,  isStartB: 1 0
+Setting rlens  13.204 15.3035
+segmentsA: 102 107,  segmentsB:103 106	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 12.3677 12.3022
+segmentsA: 104 109,  segmentsB:103 134	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 14.6305 18.7644
+segmentsA: 105 110,  segmentsB:106 165	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 15.7936 16.2541
+segmentsA: 107 18446744073709551615,  segmentsB:108 111	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 14.7032  13.008
+segmentsA: 109 18446744073709551615,  segmentsB:108 132	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 17.6315 20.4959
+segmentsA: 110 18446744073709551615,  segmentsB:111 167	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 26.5669  23.576
+segmentsA: 112 226,  segmentsB:113 18446744073709551615	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 25.3854 20.0024
+segmentsA: 224 114,  segmentsB:113 115	isStartA:  1 1,  isStartB: 0 1
+Setting rlens  22.741 18.3035
+segmentsA: 222 116,  segmentsB:115 117	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 20.2113 18.3035
+segmentsA: 220 118,  segmentsB:117 119	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 17.6629 17.6646
+segmentsA: 120 178,  segmentsB:119 121	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 15.6563 17.6646
+segmentsA: 122 160,  segmentsB:121 123	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 13.1334 11.9106
+segmentsA: 139 125,  segmentsB:124 126	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 13.2593 13.1041
+segmentsA: 217 127,  segmentsB:126 128	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 13.6189 12.8467
+segmentsA: 214 129,  segmentsB:128 130	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 14.2371 12.8467
+segmentsA: 131 216,  segmentsB:130 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 13.8598  13.008
+segmentsA: 133 18446744073709551615,  segmentsB:132 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 11.9683 12.3022
+segmentsA: 133 135,  segmentsB:278 134	isStartA:  0 1,  isStartB: 1 1
+Setting rlens 11.5616  12.016
+segmentsA: 135 137,  segmentsB:271 136	isStartA:  0 1,  isStartB: 1 1
+Setting rlens 11.5616 11.8939
+segmentsA: 137 139,  segmentsB:219 138	isStartA:  0 1,  isStartB: 1 1
+Setting rlens 18.0052 15.8838
+segmentsA: 140 142,  segmentsB:141 195	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 18.0052 18.0015
+segmentsA: 142 144,  segmentsB:205 143	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 23.4869 21.1131
+segmentsA: 144 146,  segmentsB:145 281	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 23.4869 24.2265
+segmentsA: 146 148,  segmentsB:147 250	isStartA:  0 1,  isStartB: 1 1
+Setting rlens 24.2527 27.3687
+segmentsA: 148 18446744073709551615,  segmentsB:149 249	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 13.7491 15.3308
+segmentsA: 151 18446744073709551615,  segmentsB:150 168	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 13.7491 14.5634
+segmentsA: 151 153,  segmentsB:170 152	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 13.8745 13.9568
+segmentsA: 153 155,  segmentsB:172 154	isStartA:  0 1,  isStartB: 0 1
+Setting rlens  12.176 13.5427
+segmentsA: 155 157,  segmentsB:174 156	isStartA:  0 1,  isStartB: 0 1
+Setting rlens  12.176 13.3997
+segmentsA: 157 159,  segmentsB:176 158	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 15.8279 20.2127
+segmentsA: 160 162,  segmentsB:161 179	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 15.8279  22.744
+segmentsA: 162 164,  segmentsB:163 181	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 17.3959 25.3857
+segmentsA: 164 166,  segmentsB:183 165	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 21.1167  27.916
+segmentsA: 166 18446744073709551615,  segmentsB:167 185	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 12.8425 14.2386
+segmentsA: 169 18446744073709551615,  segmentsB:168 228	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 12.8425 13.6206
+segmentsA: 169 171,  segmentsB:230 170	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 13.1212 13.2606
+segmentsA: 171 173,  segmentsB:232 172	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 11.9131 13.1351
+segmentsA: 173 175,  segmentsB:206 174	isStartA:  0 1,  isStartB: 1 1
+Setting rlens 11.9131  13.257
+segmentsA: 175 177,  segmentsB:193 176	isStartA:  0 1,  isStartB: 1 1
+Setting rlens 18.3115 20.2127
+segmentsA: 178 180,  segmentsB:221 179	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 18.3115  22.744
+segmentsA: 180 182,  segmentsB:235 181	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 19.9756 25.3857
+segmentsA: 182 184,  segmentsB:183 237	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 23.6025 26.5733
+segmentsA: 184 18446744073709551615,  segmentsB:185 239	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 12.3057 12.3846
+segmentsA: 186 211,  segmentsB:190 187	isStartA:  0 0,  isStartB: 0 1
+Setting rlens 13.0106 14.6865
+segmentsA: 188 213,  segmentsB:187 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens  12.019 11.7989
+segmentsA: 189 209,  segmentsB:192 190	isStartA:  0 0,  isStartB: 0 1
+Setting rlens 11.8968 11.7989
+segmentsA: 191 207,  segmentsB:193 192	isStartA:  0 0,  isStartB: 0 1
+Setting rlens 20.9512 20.3798
+segmentsA: 194 204,  segmentsB:197 195	isStartA:  0 0,  isStartB: 0 1
+Setting rlens 23.8354 20.3798
+segmentsA: 196 202,  segmentsB:197 199	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 27.0052 21.1354
+segmentsA: 198 200,  segmentsB:199 18446744073709551615	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 27.3766 24.2641
+segmentsA: 200 247,  segmentsB:201 18446744073709551615	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 24.2322 23.4593
+segmentsA: 202 248,  segmentsB:201 203	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 21.1212 23.4593
+segmentsA: 276 204,  segmentsB:203 205	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 11.8968 11.5564
+segmentsA: 233 207,  segmentsB:206 208	isStartA:  0 1,  isStartB: 0 1
+Setting rlens  12.019 11.5564
+segmentsA: 285 209,  segmentsB:208 210	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 12.3057 11.9845
+segmentsA: 287 211,  segmentsB:210 212	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 13.0106 13.8443
+segmentsA: 213 18446744073709551615,  segmentsB:212 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 11.6918 12.0875
+segmentsA: 214 270,  segmentsB:215 218	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 14.2371 12.0875
+segmentsA: 216 18446744073709551615,  segmentsB:215 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 11.5366 12.5893
+segmentsA: 217 268,  segmentsB:218 219	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 20.6545 20.6448
+segmentsA: 220 234,  segmentsB:221 223	isStartA:  0 1,  isStartB: 1 0
+Setting rlens  21.805 20.6448
+segmentsA: 222 272,  segmentsB:223 225	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 21.7241 21.5871
+segmentsA: 224 267,  segmentsB:225 227	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 20.4442 23.7644
+segmentsA: 226 266,  segmentsB:227 18446744073709551615	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 12.0835 14.2386
+segmentsA: 229 18446744073709551615,  segmentsB:228 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 12.0835 11.6869
+segmentsA: 229 231,  segmentsB:282 230	isStartA:  0 1,  isStartB: 1 1
+Setting rlens 12.6057  11.531
+segmentsA: 231 233,  segmentsB:284 232	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 20.6545 21.7953
+segmentsA: 234 236,  segmentsB:235 273	isStartA:  0 1,  isStartB: 1 0
+Setting rlens  21.559 21.7155
+segmentsA: 236 238,  segmentsB:237 255	isStartA:  0 1,  isStartB: 1 1
+Setting rlens 23.7923  20.436
+segmentsA: 238 18446744073709551615,  segmentsB:239 254	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 23.7481 26.2057
+segmentsA: 240 244,  segmentsB:243 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 23.7481 23.7596
+segmentsA: 240 18446744073709551615,  segmentsB:241 18446744073709551615	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 26.1941 23.7596
+segmentsA: 242 18446744073709551615,  segmentsB:241 252	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 26.1941 26.2057
+segmentsA: 242 245,  segmentsB:253 243	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 27.7762 26.6676
+segmentsA: 244 247,  segmentsB:246 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 28.1413 26.6676
+segmentsA: 245 248,  segmentsB:275 246	isStartA:  0 1,  isStartB: 1 1
+Setting rlens 26.6559 27.7399
+segmentsA: 251 18446744073709551615,  segmentsB:249 252	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 26.6559 28.1055
+segmentsA: 277 251,  segmentsB:250 253	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 22.3478 17.8043
+segmentsA: 256 18446744073709551615,  segmentsB:254 257	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 21.4158 20.0109
+segmentsA: 280 256,  segmentsB:255 258	isStartA:  0 1,  isStartB: 0 1
+Setting rlens 20.0203 16.8227
+segmentsA: 259 18446744073709551615,  segmentsB:257 260	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 19.9838 20.0109
+segmentsA: 259 264,  segmentsB:258 261	isStartA:  1 1,  isStartB: 0 1
+Setting rlens 16.8449 16.8227
+segmentsA: 262 18446744073709551615,  segmentsB:260 18446744073709551615	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 16.8449 19.9982
+segmentsA: 262 263,  segmentsB:261 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 17.7825   22.32
+segmentsA: 263 266,  segmentsB:265 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 19.9838 21.4429
+segmentsA: 264 267,  segmentsB:274 265	isStartA:  0 1,  isStartB: 1 1
+Setting rlens 11.5366 12.2882
+segmentsA: 268 279,  segmentsB:269 271	isStartA:  0 0,  isStartB: 1 0
+Setting rlens 11.6918 12.2882
+segmentsA: 270 18446744073709551615,  segmentsB:269 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 21.4158 21.4429
+segmentsA: 272 280,  segmentsB:273 274	isStartA:  0 1,  isStartB: 1 0
+Setting rlens 26.7798 26.7442
+segmentsA: 276 277,  segmentsB:275 281	isStartA:  1 0,  isStartB: 0 1
+Setting rlens 11.9517 13.7861
+segmentsA: 279 18446744073709551615,  segmentsB:278 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 12.3038 11.6869
+segmentsA: 283 18446744073709551615,  segmentsB:282 18446744073709551615	isStartA:  1 0,  isStartB: 0 0
+Setting rlens 12.3038  11.531
+segmentsA: 283 285,  segmentsB:286 284	isStartA:  0 1,  isStartB: 1 1
+Setting rlens 13.7727 11.9673
+segmentsA: 287 18446744073709551615,  segmentsB:286 18446744073709551615	isStartA:  1 0,  isStartB: 0 0

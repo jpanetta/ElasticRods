@@ -1,0 +1,5 @@
+add_library(grasshopper_bindings SHARED grasshopper_bindings.cc)
+target_link_libraries(grasshopper_bindings RodLinkages)
+set_target_properties(grasshopper_bindings PROPERTIES CXX_STANDARD 14)
+set_target_properties(grasshopper_bindings PROPERTIES CXX_STANDARD_REQUIRED ON)
+set_target_properties(grasshopper_bindings PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/grasshopper)

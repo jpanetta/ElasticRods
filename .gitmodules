@@ -1,0 +1,15 @@
+[submodule "3rdParty/visvalingam_simplify"]
+	path = 3rdparty/visvalingam_simplify
+	url = https://github.com/jpanetta/visvalingam_simplify
+[submodule "3rdParty/libigl"]
+	path = 3rdparty/libigl
+	url = https://github.com/jpanetta/libigl
+[submodule "3rdParty/RotationOptimization"]
+	path = 3rdparty/RotationOptimization
+	url = https://github.com/EPFL-LGG/RotationOptimization
+[submodule "3rdParty/spectra"]
+	path = 3rdparty/spectra
+	url = https://github.com/yixuan/spectra
+[submodule "3rdParty/MeshFEM"]
+	path = 3rdparty/MeshFEM
+	url = https://github.com/jpanetta/MeshFEM

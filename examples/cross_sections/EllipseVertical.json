@@ -1,0 +1,6 @@
+{
+    "type": "Ellipse",
+    "young": 20000,
+    "poisson": 0.3,
+    "params": [ 0.002, 0.02 ]
+}

@@ -1,0 +1,13 @@
+build
+build_*
+results
+TODO
+.DS_Store
+*.so
+*.dylib
+*.pyc
+__pycache__
+.ipynb_checkpoints
+bin/
+.vs/
+obj/

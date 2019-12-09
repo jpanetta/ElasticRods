@@ -1,0 +1,120 @@
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 1e-08
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 4e-08
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 1.6e-07
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 6.4e-07
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 2.56e-06
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 1.024e-05
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 4.096e-05
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 0.00016384
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 0.00065536
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 0.00262144
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 0.0104858
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 0.041943
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 0.167772
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 0.671089
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 2.68435
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 10.7374
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 42.9497
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 171.799
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 687.195
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 2748.78
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 10995.1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 43980.5
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 175922
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 703687
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 2.81475e+06
+0	2.28629e+07	3.13561e+06	3.13561e+06	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 1.40737e+06
+1	842577	244783	244783	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 703687
+2	484689	30731.2	30731.2	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 351844
+3	374848	10357.4	10357.4	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 175922
+4	312148	5642.45	5642.45	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 87960.9
+5	268800	3729.68	3729.68	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 43980.5
+6	241561	2476.35	2476.35	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 21990.2
+7	229346	1402.96	1402.96	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 10995.1
+8	225796	577.073	577.073	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 5497.56
+9	224881	221.263	221.263	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 2748.78
+10	224417	109.634	109.634	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 1374.39
+11	224017	69.4247	69.4247	1	1
+CHOLMOD warning: matrix not positive definite. file: ../Supernodal/t_cholmod_super_numeric.c line: 911
+CHOLMOD detected non-positive definite matrix!; increasing tau to 687.195
+12	223675	57.5061	57.5061	1	1
+13	223446	52.8408	52.8408	0.5	0
+14	223387	3629.77	3629.77	1	0
+15	223194	278.628	278.628	1	0
+16	223191	454.199	454.199	1	0
+17	223188	19.795	19.795	1	0
+18	223187	41.1932	41.1932	1	0
+19	223187	0.117344	0.117344	1	0
+20	223187	0.00435651	0.00435651	0.000488281	0
+21	223187	0.00435401	0.00435401	0.5	0
+22	223187	0.00217695	0.00217695	1	0
+23	223187	2.26889e-05	2.26889e-05	0.5	0
+24	223187	2.09017e-05	2.09017e-05	0.03125	0
+25	223187	2.07316e-05	2.07316e-05	0.0078125	0
+26	223187	2.06513e-05	2.06513e-05	3.05176e-05	0
+Backtracking failed.
+26	223187	2.06513e-05	2.06513e-05	3.05176e-05	0
+Opening the linkage
+Setting angle: 1.141590	226341	1989.86	1989.86	1	0
+1	226306	0.350796	0.350796	1	0
+2	226306	0.0419901	0.0419901	1	0
+3	226306	2.23408e-05	2.23408e-05	0.00195312	0
+4	226306	2.24564e-05	2.24564e-05	3.05176e-05	0
+Backtracking failed.
+4	226306	2.24564e-05	2.24564e-05	3.05176e-05	0
+Simulating the applied forces
+Running external torque simulation
+0	718217	2.12756e-05	2.12756e-05	0.125	0
+1	718217	2.43133e-05	2.43133e-05	0.00390625	0
+2	718217	2.38335e-05	2.38335e-05	0.00195312	0
+3	718217	2.34989e-05	2.34989e-05	0.00012207	0
+4	718217	2.34863e-05	2.34863e-05	3.05176e-05	0
+Backtracking failed.
+4	718217	2.34863e-05	2.34863e-05	3.05176e-05	0

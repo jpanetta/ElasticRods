@@ -1,0 +1,150 @@
+\newcommand{\TODO}[1]{\textbf{****** {\bf{[#1]}} ******}}
+
+\usepackage{prettyref}
+\newrefformat{sec}{Section~\ref{#1}}
+\newrefformat{tbl}{Table~\ref{#1}}
+\newrefformat{fig}{Figure~\ref{#1}}
+\newrefformat{chp}{Chapter~\ref{#1}}
+\newrefformat{eqn}{\eqref{#1}}
+\newrefformat{set}{\eqref{#1}}
+\newrefformat{alg}{Algorithm~\ref{#1}}
+\newrefformat{apx}{Appendix~\ref{#1}}
+\newrefformat{prop}{Proposition~\ref{#1}}
+\newcommand\pr[1]{\prettyref{#1}}
+
+\usepackage{mathtools}
+
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\sinc}{sinc}
+\DeclareMathOperator{\rref}{rref}
+\DeclareMathOperator{\cof}{cof}
+\DeclareMathOperator*{\sym}{sym}
+\DeclareMathOperator{\image}{im} % image space of a linear transform
+
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\newcommand{\defeq}{\vcentcolon=}
+
+\renewcommand{\Re}{\operatorname{Re}} \renewcommand{\Im}{\operatorname{Im}}
+
+\providecommand{\norm}[1]{\lVert#1\rVert}
+\providecommand{\normlr}[1]{\left\lVert#1\right\rVert}
+
+\providecommand{\tpder}[4]{\frac{\partial^3 #1}{\partial #2 \partial #3 \partial #4}}
+
+\def\jointset{\mathcal{J}}
+\def\actjoints{\mathcal{J}'}
+\def\rodset{\mathcal{R}}
+
+\renewcommand{\vec}[1]{{\bf #1}}
+\def\xflat{\vec{x}^*_\text{2D}}
+\def\xdeploy{\vec{x}^*_\text{3D}}
+\def\xtgt{\vec{x}_\text{tgt}}
+
+\usepackage{bm}
+\def\torques{{\bm \tau}}
+
+\def\R{\mathbb{R}}
+
+\def\normal{{\bm n}}
+\def\n{\normal}
+\def\a{\vec{a}}
+\def\b{\vec{b}}
+\def\c{\vec{c}}
+\def\d{\vec{d}}
+\def\t{\vec{t}}
+\def\x{\vec{x}}
+\def\X{\vec{X}}
+\def\y{\vec{y}}
+\def\z{\vec{z}}
+\def\u{\vec{u}}
+\def\f{\vec{f}}
+\def\g{\vec{g}}
+% \def\w{\boldsymbol{\omega}}
+\def\w{\vec{w}}
+\def\wn{\norm{\w}}
+\def\p{\vec{p}}
+\def\q{\vec{q}}
+\def\v{\vec{v}}
+\def\e{\vec{e}}
+\def\ue{\vec{u}^\e}
+\def\fu{\pder{\f}{u}}
+\def\fv{\pder{\f}{v}}
+\def\strain{\varepsilon}
+\def\stress{\sigma}
+\def\kb{\kappa \b}
+\def\kbi{(\kappa \b)_i}
+\def\kn{\bm{\kappa}}
+\def\k{\kappa}
+\def\R{\, \mathbb{R}}
+\def\L{\, \mathcal{L}}
+\def\deployAmount{\overline{\alpha}}
+\def\deployTgt{\overline{\alpha}^\text{tgt}}
+
+\def\wref{\hat{\w}}
+
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\providecommand{\norm}[1]{\lVert#1\rVert}
+\providecommand{\normlr}[1]{\left\lVert#1\right\rVert}
+\providecommand{\dx}{\, \mathrm{d}x}
+\providecommand{\ds}{\, \mathrm{d}s}
+\providecommand{\lint}[3]{\int_{#1}^{#2} \! #3 \, \ds}
+% \providecommand{\vint}[2]{\int_{#1} \! #2 \, \mathrm{d}x}
+% \providecommand{\sint}[2]{\int_{\partial #1} \! #2 \, \mathrm{d}A}
+\renewcommand{\div}{\nabla \cdot}
+\providecommand{\cross}{\times}
+\providecommand{\curl}{\nabla \cross}
+\providecommand{\grad}{\nabla}
+\providecommand{\laplacian}{\bigtriangleup}
+\providecommand{\shape}{\Omega}
+\providecommand{\mesh}{\mathcal{M}}
+\providecommand{\boundary}{\partial \shape}
+\providecommand{\vint}[3][\x]{\int_{#2} \! #3 \, \mathrm{d}#1}
+\providecommand{\sint}[3][\x]{\int_{#2} \! #3 \, \mathrm{d}A(#1)}
+\providecommand{\pder}[2]{\frac{\partial #1}{\partial #2}}
+\providecommand{\spder}[3]{\frac{\partial^2 #1}{\partial #2 \partial #3}}
+\providecommand{\spderx}[1]{\frac{\partial^2 #1}{\partial \x^2 }}
+\providecommand{\tder}[2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}
+\providecommand{\evalat}[2]{\left.#1\right|_{#2}}
+\renewcommand{\vec}[1]{{\bf #1}}
+
+\providecommand{\shapeder}[2]{{\mathrm{d} #1}[#2]}
+\providecommand{\matder}[1]{\dot{#1}}
+
+\providecommand{\tderatzero}[2]{\left.\frac{\mathrm{d} #1}{\mathrm{d} #2}\right|_{#2 = 0}}
+
+\providecommand{\compose}{\circ}
+\providecommand{\surface}{\Gamma}
+\providecommand{\surfacegrad}{\nabla_\surface}
+\providecommand{\surfacediv}{\surfacegrad \cdot}
+\providecommand{\surfacelaplacian}{\laplacian_\surface}
+
+\providecommand{\epssurface}{{\Gamma_\epsilon}}
+\providecommand{\epssurfacegrad}{\nabla_\epssurface}
+\providecommand{\epssurfacediv}{\epssurfacegrad \cdot}
+\providecommand{\epsnormal}{\normal_\epsilon}
+\providecommand{\epsnormalmat}{\tilde{\normal}_\epsilon}
+\providecommand{\epsphi}{\phi_\epsilon}
+\providecommand{\normalmatder}{\dot{\normal}}
+\providecommand{\shapefunc}{{\bm \phi}}
+
+\def\vt{\vec{v}_t}
+\def\k{\kappa}
+
+\providecommand\ts[1]{\widehat{\vec{t}^{#1}}}
+\providecommand\ds[2]{\widehat{\vec{d}^{#1}_{#2}}}
+\providecommand\rd[2]{\underline{\vec{d}^{#1}_{#2}}}
+\providecommand\rds[2]{\widehat{\underline{\vec{d}^{#1}_{#2}}}}
+\providecommand{\PXport}[1]{P_{\ts{#1}}^{\t^{#1}}}
+\providecommand{\ki}[2]{(\k_{#1})_i^{#2}}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+\usepackage{mathtools}
+\newcases{mycases}{\quad}{%
+  \hfil$\m@th\displaystyle{##}$}{$\m@th\displaystyle{##}$\hfil}{\lbrace}{.}
+\makeatother

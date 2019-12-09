@@ -1,0 +1,5 @@
+pybind11_add_module(elastic_rods elastic_rods.cc)
+set_target_properties(elastic_rods PROPERTIES CXX_STANDARD 14)
+set_target_properties(elastic_rods PROPERTIES CXX_STANDARD_REQUIRED ON)
+set_target_properties(elastic_rods PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
+target_link_libraries(elastic_rods PUBLIC ElasticRods RodLinkages intel_pybind_14_hack)
