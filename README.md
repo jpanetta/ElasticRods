@@ -1,7 +1,7 @@
 # ElasticRods
 ![](https://lgg.epfl.ch/publications/2019/XShells/project_teaser.png)
 
-A simulation framework for discrete elastic rods and X-Shells written in C++ with Python bindings.
+A simulation framework for [discrete elastic rods](http://www.cs.columbia.edu/cg/threads/) and X-Shells written in C++ with Python bindings.
 This is the codebase for our 2019 Siggraph paper, [X-Shells](http://julianpanetta.com/publication/xshells/).
 Check out the section on [reproducing the paper
 figures](#reproducing-the-paper-figures) for pointers to some Jupyter notebooks to
