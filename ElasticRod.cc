@@ -584,9 +584,9 @@ typename ElasticRod_T<Real_>::Gradient ElasticRod_T<Real_>::gradEnergyTwist(bool
                        &tim1   = dc.tangent[i - 1],
                        &tsi    = dc.sourceTangent[i    ],
                        &tsim1  = dc.sourceTangent[i - 1],
-                       &d1i    = dc.materialFrame[i    ].d1,
+                    // &d1i    = dc.materialFrame[i    ].d1,
                        &d2i    = dc.materialFrame[i    ].d2,
-                       &d1im1  = dc.materialFrame[i - 1].d1,
+                    // &d1im1  = dc.materialFrame[i - 1].d1,
                        &d2im1  = dc.materialFrame[i - 1].d2,
                        &ds1i   = dc.sourceMaterialFrame[i    ].d1,
                        &ds1im1 = dc.sourceMaterialFrame[i - 1].d1;
@@ -595,9 +595,11 @@ typename ElasticRod_T<Real_>::Gradient ElasticRod_T<Real_>::gradEnergyTwist(bool
                 Real_ ds1im1_dot_tim1 = ds1im1.dot(tim1),
                       d2im1_dot_tsim1 = d2im1.dot(tsim1);
 
-                Vec3 d_m_de_im1_contrib = inv_chi_hat * (ds1im1_dot_tim1 * d1im1.cross(tsim1) + d2im1_dot_tsim1 * ds1im1)
-                                        - (inv_chi_hat * inv_chi_hat * ds1im1_dot_tim1 * d2im1_dot_tsim1) * tsim1
-                                        + ds1im1.cross(d1im1);
+                // Vec3 d_m_de_im1_contrib = inv_chi_hat * (ds1im1_dot_tim1 * d1im1.cross(tsim1) + d2im1_dot_tsim1 * ds1im1)
+                //                         - (inv_chi_hat * inv_chi_hat * ds1im1_dot_tim1 * d2im1_dot_tsim1) * tsim1
+                //                         + ds1im1.cross(d1im1);
+                Vec3 d_m_de_im1_contrib = inv_chi_hat * (ds1im1_dot_tim1 * d2im1 + d2im1_dot_tsim1 * ds1im1
+                                                         - (inv_chi_hat * ds1im1_dot_tim1 * d2im1_dot_tsim1) * tsim1);
                 d_m_de_im1 += inv_len_im1 * (d_m_de_im1_contrib - tim1 * tim1.dot(d_m_de_im1_contrib));
             }
             {
@@ -605,9 +607,11 @@ typename ElasticRod_T<Real_>::Gradient ElasticRod_T<Real_>::gradEnergyTwist(bool
                 Real_ ds1i_dot_ti = ds1i.dot(ti),
                       d2i_dot_tsi = d2i.dot(tsi);
 
-                Vec3 d_m_de_i_contrib = inv_chi_hat * (ds1i_dot_ti * d1i.cross(tsi) + d2i_dot_tsi * ds1i)
-                                        - (inv_chi_hat * inv_chi_hat * ds1i_dot_ti * d2i_dot_tsi) * tsi
-                                        + ds1i.cross(d1i);
+                // Vec3 d_m_de_i_contrib = inv_chi_hat * (ds1i_dot_ti * d1i.cross(tsi) + d2i_dot_tsi * ds1i)
+                //                         - (inv_chi_hat * inv_chi_hat * ds1i_dot_ti * d2i_dot_tsi) * tsi
+                //                         + ds1i.cross(d1i);
+                Vec3 d_m_de_i_contrib = inv_chi_hat * (ds1i_dot_ti * d2i + d2i_dot_tsi * ds1i
+                                                         - (inv_chi_hat * ds1i_dot_ti * d2i_dot_tsi) * tsi);
                 d_m_de_i -= inv_len_i * (d_m_de_i_contrib - ti * ti.dot(d_m_de_i_contrib));
             }
         }

@@ -30,10 +30,10 @@ def guardedEval(func, *args, **kwargs):
     '''
     return func(*args, **{k: v for k, v in kwargs.items() if hasArg(func, k)})
 
-def gradientAt(l, dof, etype = EnergyType.Full, variableRestLen=False):
+def gradientAt(l, dof, etype = EnergyType.Full, variableRestLen=False, updatedSource=False):
     prevDoF = getVars(l, variableRestLen)
     setVars(l, dof, variableRestLen)
-    g = guardedEval(l.gradient, updatedSource=False, energyType=etype, variableRestLen=variableRestLen)
+    g = guardedEval(l.gradient, updatedSource=updatedSource, energyType=etype, variableRestLen=variableRestLen)
     setVars(l, prevDoF, variableRestLen)
     return g
 
@@ -65,15 +65,15 @@ def gradient_convergence_plot(linkage, minStepSize=1e-8, maxStepSize=1e-2, etype
     plt.loglog(eps, errors)
     plt.grid()
 
-def fd_hessian_test(linkage, stepSize, etype=EnergyType.Full, direction=None, variableRestLen=False):
+def fd_hessian_test(linkage, stepSize, etype=EnergyType.Full, direction=None, variableRestLen=False, infinitesimalTransportGradient=False):
     h = guardedEval(linkage.hessian, energyType=etype, variableRestLen=variableRestLen)
     h.reflectUpperTriangle()
     if (direction is None): direction = np.array(guardedEval(linkage.gradient, updatedSource=True, energyType=etype, variableRestLen=variableRestLen))
 
     H = csc_matrix(h.compressedColumn())
     dof = getVars(linkage, variableRestLen)
-    return [(gradientAt(linkage, dof + stepSize * direction, etype, variableRestLen=variableRestLen)
-           - gradientAt(linkage, dof - stepSize * direction, etype, variableRestLen=variableRestLen)) / (2 * stepSize),
+    return [(gradientAt(linkage, dof + stepSize * direction, etype, variableRestLen=variableRestLen, updatedSource=infinitesimalTransportGradient)
+           - gradientAt(linkage, dof - stepSize * direction, etype, variableRestLen=variableRestLen, updatedSource=infinitesimalTransportGradient)) / (2 * stepSize),
             H * direction]
 
 def fd_hessian_test_relerror_max(linkage, stepSize, etype=EnergyType.Full, direction=None):
@@ -82,20 +82,20 @@ def fd_hessian_test_relerror_max(linkage, stepSize, etype=EnergyType.Full, direc
     idx = np.argmax(relErrors)
     return (idx, relErrors[idx], dgrad[0][idx], dgrad[1][idx])
 
-def fd_hessian_test_relerror_norm(linkage, stepSize, etype=EnergyType.Full, direction=None):
-    dgrad = fd_hessian_test(linkage, stepSize, etype, direction)
+def fd_hessian_test_relerror_norm(linkage, stepSize, etype=EnergyType.Full, direction=None, infinitesimalTransportGradient=False):
+    dgrad = fd_hessian_test(linkage, stepSize, etype, direction, infinitesimalTransportGradient=infinitesimalTransportGradient)
     return norm(dgrad[0] - dgrad[1]) / norm(dgrad[0])
 
-def hessian_convergence(linkage, minStepSize=1e-8, maxStepSize=1e-2, etype=EnergyType.Full, direction=None):
+def hessian_convergence(linkage, minStepSize=1e-8, maxStepSize=1e-2, etype=EnergyType.Full, direction=None, infinitesimalTransportGradient=False):
     if (direction is None): direction = np.random.uniform(-1, 1, linkage.numDoF())
     
     epsilons = np.logspace(np.log10(minStepSize), np.log10(maxStepSize), 100)
-    errors = [fd_hessian_test_relerror_norm(linkage, eps, etype=etype, direction=direction) for eps in epsilons]
+    errors = [fd_hessian_test_relerror_norm(linkage, eps, etype, direction, infinitesimalTransportGradient) for eps in epsilons]
     return (epsilons, errors)
 
-def hessian_convergence_plot(linkage, minStepSize=1e-8, maxStepSize=1e-2, etype=EnergyType.Full, direction=None):
+def hessian_convergence_plot(linkage, minStepSize=1e-8, maxStepSize=1e-2, etype=EnergyType.Full, direction=None, infinitesimalTransportGradient=False):
     from matplotlib import pyplot as plt
-    eps, errors = hessian_convergence(linkage, minStepSize, maxStepSize, etype, direction)
+    eps, errors = hessian_convergence(linkage, minStepSize, maxStepSize, etype, direction, infinitesimalTransportGradient)
     plt.title('Directional derivative fd test for hessian')
     plt.ylabel('Relative error')
     plt.xlabel('Step size')
