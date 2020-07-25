@@ -195,6 +195,8 @@ PYBIND11_MODULE(elastic_rods, m) {
         .def("characteristicLength", &ElasticRod::characteristicLength)
         .def("approxLinfVelocity",   &ElasticRod::approxLinfVelocity)
 
+        .def("gravityForce",         &ElasticRod::gravityForce, py::arg("rho"), py::arg("g") = Vector3D(0, 0, 9.80635))
+
         .def("bendingStiffnesses",  py::overload_cast<>(&ElasticRod::bendingStiffnesses,  py::const_), py::return_value_policy::reference)
         .def("twistingStiffnesses", py::overload_cast<>(&ElasticRod::twistingStiffnesses, py::const_), py::return_value_policy::reference)
 
@@ -331,6 +333,7 @@ PYBIND11_MODULE(elastic_rods, m) {
         .def_readwrite("momentOfInertia",           &RodMaterial::momentOfInertia)
         .def_readwrite("crossSectionBoundaryPts",   &RodMaterial::crossSectionBoundaryPts)
         .def_readwrite("crossSectionBoundaryEdges", &RodMaterial::crossSectionBoundaryEdges)
+        .def_readwrite("area",                      &RodMaterial::area)
         .def("bendingStresses", &RodMaterial::bendingStresses, py::arg("curvatureNormal"))
         .def(py::pickle([](const RodMaterial &mat) {
                     return py::make_tuple(mat.area, mat.stretchingStiffness, mat.twistingStiffness,
@@ -407,6 +410,8 @@ PYBIND11_MODULE(elastic_rods, m) {
 
         .def("characteristicLength", &RodLinkage::characteristicLength)
         .def("approxLinfVelocity",   &RodLinkage::approxLinfVelocity)
+
+        .def("gravityForce",         &RodLinkage::gravityForce, py::arg("rho"), py::arg("g") = Vector3D(0, 0, 9.80635))
 
         .def("hessianNNZ",             &RodLinkage::hessianNNZ,             "Tight upper bound for nonzeros in the Hessian.",                            py::arg("variableRestLen") = false)
         .def("hessianSparsityPattern", &RodLinkage::hessianSparsityPattern, "Compressed column matrix containing all potential nonzero Hessian entries", py::arg("variableRestLen") = false, py::arg("val") = 0.0)
@@ -645,7 +650,7 @@ PYBIND11_MODULE(elastic_rods, m) {
               return compute_equilibrium(linkage, externalForces, options, fixedVars);
           },
           py::arg("linkage"),
-          py::arg("targetAverageAngle") = TARGET_ANGLE_NONE,
+          py::arg("externalForces"),
           py::arg("options") = NewtonOptimizerOptions(),
           py::arg("fixedVars") = std::vector<size_t>()
     );
@@ -656,6 +661,17 @@ PYBIND11_MODULE(elastic_rods, m) {
               return compute_equilibrium(rod, options, fixedVars);
           },
           py::arg("rod"),
+          py::arg("options") = NewtonOptimizerOptions(),
+          py::arg("fixedVars") = std::vector<size_t>()
+    );
+    m.def("compute_equilibrium",
+          [](ElasticRod &rod, const Eigen::VectorXd &externalForces, const NewtonOptimizerOptions &options, const std::vector<size_t> &fixedVars) {
+              py::scoped_ostream_redirect stream1(std::cout, py::module::import("sys").attr("stdout"));
+              py::scoped_ostream_redirect stream2(std::cerr, py::module::import("sys").attr("stderr"));
+              return compute_equilibrium(rod, externalForces, options, fixedVars);
+          },
+          py::arg("rod"),
+          py::arg("externalForces"),
           py::arg("options") = NewtonOptimizerOptions(),
           py::arg("fixedVars") = std::vector<size_t>()
     );

@@ -2477,6 +2477,34 @@ Real_ RodLinkage_T<Real_>::approxLinfVelocity(const VecX &paramVelocity) const {
 
     return maxvel;
 }
+
+template<typename Real_>
+VecX_T<Real_> RodLinkage_T<Real_>::gravityForce(Real_ rho, const Vec3_T<Real_> &g) const {
+    VecX result(VecX::Zero(numDoF()));
+    VecX ge;
+
+    for (size_t si = 0; si < numSegments(); ++si) {
+        const auto &s = segment(si);
+        ge = s.rod.gravityForce(rho, g);
+        const size_t nfv = s.numFreeVertices();
+        // Copy over gravity forces on the "free" vertices.
+        result.segment(dofOffsetForSegment(si), 3 * nfv) = ge.segment((s.hasStartJoint() * 2) * 3, 3 * nfv);
+
+        // Accumulate contributions to the start/end joints (if they exist)
+        for (size_t lji = 0; lji < 2; ++lji) {
+            size_t jindex = s.joint(lji);
+            if (jindex == NONE) continue;
+            const size_t j = (lji == 0) ? 0 : s.rod.numEdges() - 1;
+
+            result.template segment<3>(dofOffsetForJoint(jindex)) +=
+                ge.template segment<3>(3 * (j    )) +
+                ge.template segment<3>(3 * (j + 1));
+        }
+    }
+
+    return result;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // 1D uniform Laplacian regularization energy for the rest length optimization:
 //      0.5 * sum_i (lbar^{i} - lbar^{i - 1})^2

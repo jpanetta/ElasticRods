@@ -128,7 +128,7 @@ struct RodLinkage_T {
     // Initialize the rod linkage from a line graph.
     void set(std::vector<MeshIO::IOVertex > vertices, // copy edited inside
              std::vector<MeshIO::IOElement> edges,    // copy edited inside
-             size_t subdivision = defaultSubdivision, 
+             size_t subdivision = defaultSubdivision,
              bool consistentAngle = defaultConsistentAngle);
 
     void set(const Eigen::MatrixX3d &vertices,
@@ -524,6 +524,17 @@ struct RodLinkage_T {
     // changing the parameters at rate paramVelocity.
     // ***Assumes that the source frame has been updated***.
     Real_ approxLinfVelocity(const VecX &paramVelocity) const;
+
+    // Get the external forces acting on the rod due to gravity acceleration
+    // vector "g", assuming the rod is made of a material with uniform mass
+    // density rho.
+    // Defaults to using the local gravity at EPFL in m/s^2, close to standard
+    // gravity 9.80665. A note on units: g should be in m/s^2 if rho is in
+    // kg/mm^3 and force is in Newtons (e.g., if we are using MPa for the
+    // Young's modulus and mm for length units). Note here the length unit used
+    // to express density should match the simulation length unit, but g is
+    // separately expressed using meters for consistency with N = kg m/s^2.
+    VecX gravityForce(Real_ rho, const Vec3 &g = Vec3(0.0, 0.0, 9.80635)) const;
 
     // 1D uniform Laplacian regularization energy for the rest length optimization.
     // Note: gradient is of size numRestLengths(),

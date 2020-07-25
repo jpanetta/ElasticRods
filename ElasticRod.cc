@@ -1353,6 +1353,22 @@ Real_ ElasticRod_T<Real_>::approxLinfVelocity(const VecX_T<Real_> &paramVelocity
     return maxvel;
 }
 
+template<typename Real_>
+VecX_T<Real_> ElasticRod_T<Real_>::gravityForce(Real_ rho, const Vec3_T<Real_> &g) const {
+    VecX result(VecX::Zero(numDoF()));
+    const size_t ne = numEdges();
+    for (size_t j = 0; j < ne; ++j) {
+        // Note: `density(j)` here is just used to avoid double-counting the
+        // overlapping terminal edges at the X-shell joints! Currently the mass
+        // density can only be specified using the `rho` paramter (and we do
+        // not support spatially varying mass densities).
+        auto contrib = 0.5 * (rho * density(j) * material(j).area * m_restLen[j] * g).eval();
+        result.template segment<3>(3 * (j    )) += contrib;
+        result.template segment<3>(3 * (j + 1)) += contrib;
+    }
+    return result;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // 1D uniform Laplacian regularization energy for the rest length optimization:
 //      0.5 * sum_i (lbar^{i} - lbar^{i - 1})^2

@@ -47,7 +47,7 @@ struct EquilibriumProblem : NewtonProblem {
     virtual Real energy() const override { return object.energy() + externalPotentialEnergy(); }
 
     virtual Eigen::VectorXd gradient(bool freshIterate = false) const override {
-        auto result = object.gradient(freshIterate);
+        Eigen::VectorXd result = object.gradient(freshIterate);
         // Add in the gradient of the external potential energy.
         if (external_forces.size() == 0) return result;
         if (external_forces.size() != result.size()) throw std::runtime_error("Invalid external force vector");
