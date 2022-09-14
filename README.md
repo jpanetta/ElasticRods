@@ -28,11 +28,9 @@ You can install all the mandatory dependencies on macOS with [MacPorts](https://
 ```bash
 # Build/version control tools, C++ code dependencies
 sudo port install cmake boost suitesparse ninja
-# Dependencies for jupyterlab/notebooks
-sudo port install py37-pip
-sudo port select --set python python37
-sudo port select --set pip3 pip37
-sudo port install npm6
+# Install nodejs/npm using nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+nvm install 17 && nvm use 17
 ```
 
 ### Ubuntu 19.04
@@ -77,7 +75,8 @@ using the Python bindings.
 To run the Jupyter notebooks, you will need to install JupyterLab and
 [my fork](https://github.com/jpanetta/pythreejs) of the `pythreejs` library.
 JupyterLab can be installed through `pip`, and the following commands should
-set up all the requirements on both macOS and Ubuntu:
+set up all the requirements on both macOS and Ubuntu. Using a virtual environment
+is strongly recommended!
 
 ```bash
 pip3 install wheel # Needed if installing in a virtual environment
@@ -92,6 +91,11 @@ cd js
 jupyter labextension install .
 
 pip3 install matplotlib scipy
+```
+
+You may need to add the following to your shell startup script for the installation of `pythreejs`'s dependencies during `pip3 install -e .` to succeed:
+```
+export NODE_OPTIONS=--openssl-legacy-provider;
 ```
 
 Launch Jupyter lab from the root python directory:
