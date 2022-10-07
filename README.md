@@ -23,11 +23,12 @@ The code also relies on several dependencies that are included as submodules:
 [visvalingam_simplify](https://github.com/shortsleeves/visvalingam_simplify).
 
 ### macOS
-You can install all the mandatory dependencies on macOS with [MacPorts](https://www.macports.org):
+You can install all the mandatory dependencies on macOS with [MacPorts](https://www.macports.org). When installing SuiteSparse, be sure to get a version linked against `Accelerate.framework` rather than `OpenBLAS`; on MacPorts this is achieved by requesting the `accelerate` variant, which is no longer the default.
 
 ```bash
 # Build/version control tools, C++ code dependencies
-sudo port install cmake boost suitesparse ninja
+sudo port install cmake boost ninja
+sudo port install SuiteSparse +accelerate
 # Install nodejs/npm using nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 nvm install 17 && nvm use 17
