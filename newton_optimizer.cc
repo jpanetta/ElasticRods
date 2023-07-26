@@ -86,8 +86,7 @@ Real NewtonOptimizer::newton_step(Eigen::VectorXd &step, /* copy modified inside
                 }
 
                 auto Hmod = H_reduced;
-                // TODO KNOTS: should probably use addWithIdenticalSparsity here...
-                Hmod.addWithDistinctSparsityPattern(*M_reduced, tau * currentTauScale); // Note: rows/cols corresponding to vars with active bounds will now have a nonzero value different from 1 on the diagonal, but this is fine since the RHS component is zero...
+                Hmod.addWithIdenticalSparsity(*M_reduced, tau * currentTauScale); // Note: rows/cols corresponding to vars with active bounds will now have a nonzero value different from 1 on the diagonal, but this is fine since the RHS component is zero...
                 solver().updateFactorization(std::move(Hmod));
             }
             else {
@@ -109,7 +108,7 @@ Real NewtonOptimizer::newton_step(Eigen::VectorXd &step, /* copy modified inside
             std::cout << e.what() << "; increasing tau to " << tau << std::endl;
             if (currentTauScale == 0) currentTauScale = tauScale();
             if (tau > 1e80) {
-                prob->writeDebugFiles("tau_runaway");
+                // prob->writeDebugFiles("tau_runaway");
                 std::cout << "||H||_2: "    << prob->hessianL2Norm() << std::endl;
                 std::cout << "||M||_2: "    << prob->metricL2Norm()  << std::endl;
                 std::cout << "Scaled tau: " << tau * currentTauScale << std::endl;

@@ -49,17 +49,14 @@ struct NewtonProblem {
     // For efficiency, it must have the same sparsity pattern as the Hessian.
     // (This matrix is added to indefinite Hessians to produce a positive definite modified Hessian.)
     const SuiteSparseMatrix &metric() const {
-        if (m_useIdentityMetric) {
-            if (!m_identityMetric) {
-                m_identityMetric = std::make_unique<SuiteSparseMatrix>(hessianSparsityPattern());
-                m_identityMetric->setIdentity(true);
-            }
-            return *m_identityMetric;
-        }
-        if (disableCaching || !m_cachedMetric) {
+        if (!m_cachedMetric) { m_cachedMetric = std::make_unique<SuiteSparseMatrix>(hessianSparsityPattern()); }
+        if (disableCaching || !m_cachedMetricUpToDate) {
             m_cachedMetric = std::make_unique<SuiteSparseMatrix>(hessianSparsityPattern());
             m_evalMetric(*m_cachedMetric);
+            m_cachedMetricUpToDate = true;
         }
+        if (m_useIdentityMetric)
+            m_cachedMetric->setIdentity(/*preserveSparsity*/ true);
         return *m_cachedMetric;
     }
 
@@ -109,9 +106,9 @@ struct NewtonProblem {
     Real LEQConstraintResidual() const { return LEQConstraintRHS() - LEQConstraintMatrix().dot(getVars()); }
     bool LEQConstraintIsFeasible() const { return std::abs(LEQConstraintResidual()) <= LEQConstraintTol(); }
 
-    virtual void writeIterateFiles(size_t it) const = 0;
     bool writeIterates = false;
-    virtual void writeDebugFiles(const std::string &errorName) const = 0;
+    virtual void writeIterateFiles(size_t /* it */) const { };
+    virtual void writeDebugFiles(const std::string &/* errorName */) const { };
 
     NewtonProblem &operator=(const NewtonProblem &b) = delete;
 
@@ -222,7 +219,7 @@ struct NewtonProblem {
 
 protected:
     // Clear the cached per-iterate quantities
-    void m_clearCache() { m_cachedHessianUpToDate = false, m_cachedMetric.reset(); /* TODO: decide if we want this: m_metricL2Norm = -1; */ }
+    void m_clearCache() { m_cachedHessianUpToDate = false, m_cachedMetricUpToDate = false, m_cachedMetric.reset(); /* TODO: decide if we want this: m_metricL2Norm = -1; */ }
     // Called at the start of each new iteration (after line search has been performed)
     virtual void m_iterationCallback(size_t /* i */) { }
 
@@ -237,9 +234,10 @@ protected:
     // Cached values for the mass matrix and its L2 norm
     // Mass matrix is recomputed each iteration; L2 norm is estimated only
     // once across the entire solve.
-    mutable std::unique_ptr<SuiteSparseMatrix> m_cachedHessian, m_cachedMetric, m_identityMetric;
+    mutable std::unique_ptr<SuiteSparseMatrix> m_cachedHessian, m_cachedMetric;
     mutable bool m_cachedHessianUpToDate = false;
-    mutable bool m_sparsityPatternFactorizationUpToDate = true;
+    mutable bool m_cachedMetricUpToDate = false;
+    mutable bool m_sparsityPatternFactorizationUpToDate = false;
     mutable Real m_metricL2Norm = -1;
 };
 
@@ -358,13 +356,11 @@ private:
 
 struct NewtonOptimizer {
     NewtonOptimizer(std::unique_ptr<NewtonProblem> &&p) {
-        m_solver = std::make_unique<CholmodFactorizer>(p->hessianReducedSparsityPattern());
         prob = std::move(p);
-        m_solver->factorizeSymbolic();
+        updateSymbolicFactorization(prob->hessianReducedSparsityPattern());
         const std::vector<size_t> fixedVars = prob->fixedVars();
         isFixed.assign(prob->numVars(), false);
         for (size_t fv : fixedVars) isFixed[fv] = true;
-
     }
     ConvergenceReport optimize();
 
