@@ -37,9 +37,10 @@ struct NewtonProblem {
     // For some problems, a less expensive gradient expression can be used in this case.
     virtual Eigen::VectorXd gradient(bool freshIterate = false) const = 0;
     const SuiteSparseMatrix &hessian() const {
-        if (!m_cachedHessian) {
-            m_cachedHessian = std::make_unique<SuiteSparseMatrix>(hessianSparsityPattern());
+        if (!m_cachedHessian) { m_cachedHessian = std::make_unique<SuiteSparseMatrix>(hessianSparsityPattern()); }
+        if (disableCaching || !m_cachedHessianUpToDate) {
             m_evalHessian(*m_cachedHessian);
+            m_cachedHessianUpToDate = true;
         }
         return *m_cachedHessian;
     }
@@ -55,7 +56,7 @@ struct NewtonProblem {
             }
             return *m_identityMetric;
         }
-        if (!m_cachedMetric) {
+        if (disableCaching || !m_cachedMetric) {
             m_cachedMetric = std::make_unique<SuiteSparseMatrix>(hessianSparsityPattern());
             m_evalMetric(*m_cachedMetric);
         }
@@ -89,6 +90,8 @@ struct NewtonProblem {
         hsp.rowColRemoval([&isFixed] (size_t i) { return isFixed[i]; });
         return hsp;
     }
+    bool sparsityPatternFactorizationUpToDate() const { return m_sparsityPatternFactorizationUpToDate; }
+    void sparsityPatternFactorizationUpToDate(bool val) { m_sparsityPatternFactorizationUpToDate = val; }
 
     const std::vector<size_t> &fixedVars() const { return m_fixedVars; }
     void setFixedVars(const std::vector<size_t> &fv) { m_fixedVars = fv; }
@@ -190,7 +193,7 @@ struct NewtonProblem {
     }
 
     // Get feasible step length and the index of the step-limiting bound
-    std::pair<Real, size_t> feasibleStepLength(const Eigen::VectorXd &vars, const Eigen::VectorXd &step) const {
+    virtual std::pair<Real, size_t> feasibleStepLength(const Eigen::VectorXd &vars, const Eigen::VectorXd &step) const {
         Real alpha = std::numeric_limits<Real>::max();
         size_t blocking_idx = std::numeric_limits<size_t>::max();
 
@@ -215,9 +218,11 @@ struct NewtonProblem {
 
     virtual ~NewtonProblem() { }
 
+    bool disableCaching = false; // To be used when, e.g., this problem is wrapped by another problem which does its own Hessian caching...
+
 protected:
     // Clear the cached per-iterate quantities
-    void m_clearCache() { m_cachedHessian.reset(), m_cachedMetric.reset(); /* TODO: decide if we want this: m_metricL2Norm = -1; */ }
+    void m_clearCache() { m_cachedHessianUpToDate = false, m_cachedMetric.reset(); /* TODO: decide if we want this: m_metricL2Norm = -1; */ }
     // Called at the start of each new iteration (after line search has been performed)
     virtual void m_iterationCallback(size_t /* i */) { }
 
@@ -233,6 +238,8 @@ protected:
     // Mass matrix is recomputed each iteration; L2 norm is estimated only
     // once across the entire solve.
     mutable std::unique_ptr<SuiteSparseMatrix> m_cachedHessian, m_cachedMetric, m_identityMetric;
+    mutable bool m_cachedHessianUpToDate = false;
+    mutable bool m_sparsityPatternFactorizationUpToDate = true;
     mutable Real m_metricL2Norm = -1;
 };
 
@@ -350,9 +357,10 @@ private:
 };
 
 struct NewtonOptimizer {
-    NewtonOptimizer(std::unique_ptr<NewtonProblem> &&p) : solver(p->hessianReducedSparsityPattern()) {
+    NewtonOptimizer(std::unique_ptr<NewtonProblem> &&p) {
+        m_solver = std::make_unique<CholmodFactorizer>(p->hessianReducedSparsityPattern());
         prob = std::move(p);
-        solver.factorizeSymbolic();
+        m_solver->factorizeSymbolic();
         const std::vector<size_t> fixedVars = prob->fixedVars();
         isFixed.assign(prob->numVars(), false);
         for (size_t fv : fixedVars) isFixed[fv] = true;
@@ -360,6 +368,11 @@ struct NewtonOptimizer {
     }
     ConvergenceReport optimize();
 
+    // Returns "tau", the coefficient of the metric term that was added to make the Hessian positive definite.
+    // "-tau" can be interpreted as an estimate (lower bound) for the smallest generalized eigenvalue for "H d = lambda M d"
+    // (Returns 0 if the Hessian is already positive definite).
+    // Upon return, "solver" holds a factorization of the matrix:
+    //     (H + tau (M / ||M||_2))
     Real newton_step(Eigen::VectorXd &step, /* copy modified inside */ Eigen::VectorXd g, const WorkingSet &ws, Real &beta, const Real betaMin, const bool feasibility = false);
 
     // Calculate a Newton step with empty working set and default beta/betaMin.
@@ -381,6 +394,22 @@ struct NewtonOptimizer {
         // "solver" and (if applicable) the kkt_solver as a side-effect.
         Eigen::VectorXd dummy;
         newton_step(dummy, Eigen::VectorXd::Zero(prob->numVars()));
+    }
+
+    // Update symbolic factorization, used e.g. in case the 
+    // sparsity pattern or number of variables changed.
+    void updateSymbolicFactorization(const SuiteSparseMatrix &H) {
+        m_solver = std::make_unique<CholmodFactorizer>(H);
+        m_solver->factorizeSymbolic();
+        prob->sparsityPatternFactorizationUpToDate(true);
+    }
+
+    CholmodFactorizer &solver() { 
+        if (!m_solver) {
+            m_solver = std::make_unique<CholmodFactorizer>(prob->hessianReducedSparsityPattern());
+            m_solver->factorizeSymbolic();
+        }
+        return *m_solver;
     }
 
     Real tauScale() const { return (options.hessianScaledBeta ? m_cachedHessianL2Norm.get(*prob) : 1.0) / prob->metricL2Norm(); }
@@ -420,13 +449,13 @@ struct NewtonOptimizer {
     }
 
     NewtonOptimizerOptions options;
-    CholmodFactorizer solver;
     KKTSolver kkt_solver;
     // We fix variables by constraining the newton step to have zeros for these entries
     std::vector<char> isFixed;
     mutable CachedHessianL2Norm m_cachedHessianL2Norm;
 private:
     std::unique_ptr<NewtonProblem> prob;
+    std::unique_ptr<CholmodFactorizer> m_solver;
 };
 
 #endif /* end of include guard: NEWTON_OPTIMIZER_HH */

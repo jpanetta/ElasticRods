@@ -108,7 +108,7 @@ struct ActuationSparsifier {
 
         // solve for x perturbation due to changing forces.
         auto &opt = *equilibriumOptimizer;
-        m_delta_x = opt.extractFullSolution(opt.solver.solve(opt.removeFixedEntries(apply_d_force_d_vars(vars, delta_vars))));
+        m_delta_x = opt.extractFullSolution(opt.solver().solve(opt.removeFixedEntries(apply_d_force_d_vars(vars, delta_vars))));
 
         // inject x perturbation
         auto ad_x = diff_linkage.getDoFs();

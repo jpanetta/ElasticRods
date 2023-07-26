@@ -100,7 +100,7 @@ struct LOMinAngleConstraint {
     Eigen::VectorXd solve_dx_dalphabar(NewtonOptimizer &opt) const {
         //   [H_2d a][dx/dalpha_bar] = [0]
         //   [a^T  0][dl/dalpha_bar]   [1]
-        return opt.extractFullSolution(opt.kkt_solver(opt.solver, Eigen::VectorXd::Zero(opt.get_problem().numReducedVars()), 1.0));
+        return opt.extractFullSolution(opt.kkt_solver(opt.solver(), Eigen::VectorXd::Zero(opt.get_problem().numReducedVars()), 1.0));
     }
 
     // If the constraint is in the working set, check if the Lagrange multiplier is negative;

@@ -55,8 +55,24 @@ Real NewtonOptimizer::newton_step(Eigen::VectorXd &step, /* copy modified inside
     // the reduced version (if it is ever needed).
     std::unique_ptr<SuiteSparseMatrix> M_reduced;
 
-    auto gReduced = removeFixedEntries(g);
-    Eigen::VectorXd x(gReduced.size());
+    Eigen::VectorXd x, gReduced;
+
+    auto postprocessSolution = [&]() {
+        extractFullSolution(x, step);
+        step *= -1;
+        // ws.validateStep(step);
+
+        if (prob->hasLEQConstraint()) {
+            // TODO: handle more than a single constraint...
+            Eigen::VectorXd a = removeFixedEntries(ws.getFreeComponent(prob->LEQConstraintMatrix()));
+            kkt_solver.update(solver(), a);
+            const Real r = feasibility ? prob->LEQConstraintResidual() : 0.0;
+            extractFullSolution(kkt_solver.solve(-x, r), step);
+        }
+    };
+
+    if(!prob->sparsityPatternFactorizationUpToDate())
+        updateSymbolicFactorization(H_reduced);
 
     Real currentTauScale = 0; // simple caching mechanism to avoid excessive calls to tauScale()
     while (true) {
@@ -70,27 +86,20 @@ Real NewtonOptimizer::newton_step(Eigen::VectorXd &step, /* copy modified inside
                 }
 
                 auto Hmod = H_reduced;
-                Hmod.addWithIdenticalSparsity(*M_reduced, tau * currentTauScale); // Note: rows/cols corresponding to vars with active bounds will now have a nonzero value different from 1 on the diagonal, but this is fine since the RHS component is zero...
-                solver.updateFactorization(std::move(Hmod));
+                // TODO KNOTS: should probably use addWithIdenticalSparsity here...
+                Hmod.addWithDistinctSparsityPattern(*M_reduced, tau * currentTauScale); // Note: rows/cols corresponding to vars with active bounds will now have a nonzero value different from 1 on the diagonal, but this is fine since the RHS component is zero...
+                solver().updateFactorization(std::move(Hmod));
             }
             else {
-                solver.updateFactorization(H_reduced);
+                solver().updateFactorization(H_reduced);
             }
 
             BENCHMARK_SCOPED_TIMER_SECTION solve("Solve");
 
-            solver.solve(gReduced, x);
-            if (!solver.checkPosDef()) throw std::runtime_error("System matrix is not positive definite");
-            extractFullSolution(x, step);
-            step *= -1;
-
-            if (prob->hasLEQConstraint()) {
-                // TODO: handle more than a single constraint...
-                Eigen::VectorXd a = removeFixedEntries(ws.getFreeComponent(prob->LEQConstraintMatrix()));
-                kkt_solver.update(solver, a);
-                const Real r = feasibility ? prob->LEQConstraintResidual() : 0.0;
-                extractFullSolution(kkt_solver.solve(-x, r), step);
-            }
+            gReduced = removeFixedEntries(g);
+            solver().solve(gReduced, x);
+            if (!solver().checkPosDef()) throw std::runtime_error("System matrix is not positive definite");
+            postprocessSolution();
 
             break;
         }
@@ -225,7 +234,7 @@ ConvergenceReport NewtonOptimizer::optimize() {
             auto M_reduced = prob->metric();
             fixVariablesInWorkingSet(*prob, M_reduced, g, workingSet);
             M_reduced.rowColRemoval([&](SuiteSparse_long i) { return isFixed[i]; });
-            auto d = negativeCurvatureDirection(solver, M_reduced, 1e-6);
+            auto d = negativeCurvatureDirection(solver(), M_reduced, 1e-6);
             {
                 Real dnorm = d.norm();
                 if (dnorm != 0.0) {

@@ -44,7 +44,7 @@ private:
         VXd g_reduced = opt.removeFixedEntries(g);
         VXd a_reduced = opt.removeFixedEntries(a);
 
-        auto &solver = opt.solver;
+        auto &solver = opt.solver();
         solver.updateFactorization(H_reduced); VXd Hinv_a = opt.extractFullSolution(solver.solve(a_reduced));
         // Compute displacement step producing (linearized) unit deployment increment
         Real a_Hinv_a = a.dot(Hinv_a);

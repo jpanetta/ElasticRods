@@ -70,8 +70,8 @@ struct TargetSurfaceFitter {
         Eigen::VectorXd b = m_apply_W    (linkage, linkage.jointPositions() - joint_pos_tgt)
                           + m_apply_Wsurf(linkage, linkage.jointPositions() - joint_closest_surf_pts);
         if (opt.get_problem().hasLEQConstraint())
-            return opt.extractFullSolution(opt.kkt_solver(opt.solver, opt.removeFixedEntries(b)));
-        return opt.extractFullSolution(opt.solver.solve(opt.removeFixedEntries(b)));
+            return opt.extractFullSolution(opt.kkt_solver(opt.solver(), opt.removeFixedEntries(b)));
+        return opt.extractFullSolution(opt.solver().solve(opt.removeFixedEntries(b)));
     }
 
     // Solve for the change in adjoint state induced by a perturbation of the equilibrium state delta_x (and possibly the structure's design parameters p):
@@ -97,8 +97,8 @@ struct TargetSurfaceFitter {
                 - d3E_w.head(delta_x.size())).eval();
 
         if (opt.get_problem().hasLEQConstraint())
-            return opt.extractFullSolution(opt.kkt_solver(opt.solver, opt.removeFixedEntries(b)));
-        return opt.extractFullSolution(opt.solver.solve(opt.removeFixedEntries(b)));
+            return opt.extractFullSolution(opt.kkt_solver(opt.solver(), opt.removeFixedEntries(b)));
+        return opt.extractFullSolution(opt.solver().solve(opt.removeFixedEntries(b)));
     }
 
     ////////////////////////////////////////////////////////////////////////////
