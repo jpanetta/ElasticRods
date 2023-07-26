@@ -15,7 +15,7 @@ def setVars(l, dof, variableRestLen=False):
 def energyAt(l, dof, etype = EnergyType.Full, variableRestLen=False):
     prevDoF = getVars(l, variableRestLen)
     setVars(l, dof, variableRestLen)
-    energy = l.energy(etype)
+    energy = guardedEval(l.energy, energyType = etype)
     setVars(l, prevDoF, variableRestLen)
     return energy
 
