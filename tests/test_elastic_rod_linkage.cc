@@ -294,14 +294,6 @@ int main(int argc, const char * argv[]) {
     }
     const std::string &linkageGraph = argv[1];
 
-#if MESHFEM_WITH_TBB
-    size_t np = tbb::task_scheduler_init::default_num_threads();
-    if (argc >= 5) {
-        np = std::stoi(argv[4]);
-    }
-    tbb::task_scheduler_init init(np);
-#endif
-
     Real fd_eps = 1e-7;
     if (argc >= 6) { fd_eps = std::stod(argv[5]); }
 

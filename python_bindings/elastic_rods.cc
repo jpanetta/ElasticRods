@@ -22,11 +22,6 @@
 #include <pybind11/iostream.h>
 namespace py = pybind11;
 
-#if MESHFEM_WITH_TBB
-// For control over parallelism
-std::unique_ptr<tbb::task_scheduler_init> g_task_scheduler_init;
-#endif
-
 template<typename T>
 std::string hexString(T val) {
     std::ostringstream ss;
@@ -908,15 +903,6 @@ PYBIND11_MODULE(elastic_rods, m) {
         },
         py::arg("include_messages") = false)
         ;
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // Control parallelism
-    ////////////////////////////////////////////////////////////////////////////////
-#if MESHFEM_WITH_TBB
-    m.def("set_max_num_tbb_threads", [&](size_t numThreads) {
-        g_task_scheduler_init = std::make_unique<tbb::task_scheduler_init>(numThreads);
-    });
-#endif
 
     ////////////////////////////////////////////////////////////////////////////
     // Free-standing output functions

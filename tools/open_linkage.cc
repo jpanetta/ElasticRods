@@ -11,11 +11,6 @@ int main(int argc, const char *argv[]) {
         exit(-1);
     }
 
-#if MESHFEM_WITH_TBB
-    // size_t np = tbb::task_scheduler_init::default_num_threads();
-    tbb::task_scheduler_init init(6);
-#endif
-
     const std::string linkage_path(argv[1]),
                 cross_section_path(argv[2]);
     Real deployedActuationAngle = std::stod(argv[3]);
