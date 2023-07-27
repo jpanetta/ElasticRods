@@ -110,7 +110,7 @@ void RodMaterial::setContour(Real E, Real nu, const std::string &path, Real scal
     // Triangulate the contour
     std::vector<MeshIO::IOVertex > triangulatedVertices;
     std::vector<MeshIO::IOElement> triangles;
-    triangulatePSLC(crossSectionBoundaryPts, crossSectionBoundaryEdges, holePts,
+    triangulatePSLG(crossSectionBoundaryPts, crossSectionBoundaryEdges, holePts,
                     triangulatedVertices, triangles, triArea * bb.volume(), "Q");
 
     Eigen::Matrix2d R;

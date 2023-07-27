@@ -1,6 +1,6 @@
 #include <MeshFEM/MSHFieldWriter.hh>
 #include "ElasticRod.hh"
-#include "AutomaticDifferentiation.hh"
+#include <MeshFEM/AutomaticDifferentiation.hh>
 
 using VField = VectorField<Real, 3>;
 using SField = ScalarField<Real>;

@@ -2,10 +2,10 @@
 #include <stdexcept>
 #include <cmath>
 #include <MeshFEM/GlobalBenchmark.hh>
-#include "VectorOperations.hh"
+#include <MeshFEM/Geometry.hh>
 #include "SparseMatrixOps.hh"
 #include <MeshFEM/unused.hh>
-#include "AutomaticDifferentiation.hh"
+#include <MeshFEM/AutomaticDifferentiation.hh>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Geometric operations
@@ -53,7 +53,7 @@ void ElasticRod_T<Real_>::setRestConfiguration(const std::vector<Pt3_T<Real_>> &
     // Parallel transport this reference vector to the remaining rod edges
     for (size_t i = 1; i < ne; ++i) {
         rest_d1.emplace_back(
-            parallelTransportNormalized(unit_tangents[i - 1], unit_tangents[i],
+            parallelTransportNormalized<Real_>(unit_tangents[i - 1], unit_tangents[i],
                                         rest_d1.back()));
     }
 
@@ -153,8 +153,8 @@ void ElasticRod_T<Real_>::DeformedState::update(const std::vector<Pt3_T<Real_>> 
         len[j] = tangent[j].norm();
         tangent[j] /= len[j];
 
-        referenceDirectors.emplace_back(parallelTransportNormalized(sourceTangent[j], tangent[j], sourceReferenceDirectors[j].d1),
-                                        parallelTransportNormalized(sourceTangent[j], tangent[j], sourceReferenceDirectors[j].d2));
+        referenceDirectors.emplace_back(parallelTransportNormalized<Real_>(sourceTangent[j], tangent[j], sourceReferenceDirectors[j].d1),
+                                        parallelTransportNormalized<Real_>(sourceTangent[j], tangent[j], sourceReferenceDirectors[j].d2));
     }
 
     // Compute twist of the transported reference directors from one edge to the next
@@ -164,7 +164,7 @@ void ElasticRod_T<Real_>::DeformedState::update(const std::vector<Pt3_T<Real_>> 
         // Finite rotation angle needed to take the parallel transported copy
         // of the previous edge's reference director to the current edge's
         // reference director.
-        Vec3 prevDirectorTransported = parallelTransportNormalized(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d1);
+        Vec3 prevDirectorTransported = parallelTransportNormalized<Real_>(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d1);
         referenceTwist[i] = angle(tangent[i], prevDirectorTransported, referenceDirectors[i].d1);
 
         // Temporal coherence: to avoid jumps in the material frame twist of 2 pi,
@@ -213,8 +213,8 @@ void ElasticRod_T<Real_>::DeformedState::setReferenceTwist(Real_ newTwist) {
     const size_t nv = m_point.size();
     Real_ referenceRotation = 0;
     for (size_t i = 1; i < nv - 1; ++i) {
-        Vec3 prevD1Transported = parallelTransportNormalized(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d1),
-             prevD2Transported = parallelTransportNormalized(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d2);
+        Vec3 prevD1Transported = parallelTransportNormalized<Real_>(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d1),
+             prevD2Transported = parallelTransportNormalized<Real_>(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d2);
 
         referenceDirectors[i].d1 = rotatedVectorAngle(tangent[i], newTwist, prevD1Transported);
         referenceDirectors[i].d2 = rotatedVectorAngle(tangent[i], newTwist, prevD2Transported);
@@ -238,8 +238,8 @@ template<typename Real_>
 Vec3_T<Real_> ElasticRod_T<Real_>::materialFrameD2ForTheta(Real_ theta, const Vec3_T<Real_> &eNew, size_t j) const {
     // Determine parallel-transported directors (from source tangent vector to eNew)
     const auto &dc = deformedConfiguration();
-    Vec3 refd1 = parallelTransportNormalized(dc.sourceTangent[j], eNew.normalized(), dc.sourceReferenceDirectors[j].d1);
-    Vec3 refd2 = parallelTransportNormalized(dc.sourceTangent[j], eNew.normalized(), dc.sourceReferenceDirectors[j].d2);
+    Vec3 refd1 = parallelTransportNormalized<Real_>(dc.sourceTangent[j], eNew.normalized(), dc.sourceReferenceDirectors[j].d1);
+    Vec3 refd2 = parallelTransportNormalized<Real_>(dc.sourceTangent[j], eNew.normalized(), dc.sourceReferenceDirectors[j].d2);
     // std::cout << "sourceTangent: " << dc.sourceTangent[j].transpose() << std::endl;
     // std::cout << "refd1: " << refd1.transpose() << std::endl;
     // std::cout << "refd2: " << refd2.transpose() << std::endl;
@@ -268,8 +268,8 @@ Real_ ElasticRod_T<Real_>::thetaForMaterialFrameD2(Vec3_T<Real_> d2, const Vec3_
 
     // Determine parallel-transported directors (from source tangent vector to eNew)
     Vec3 tNew = eNew.normalized();
-    Vec3 refd1 = parallelTransportNormalized(dc.sourceTangent[j], tNew, dc.sourceReferenceDirectors[j].d1);
-    Vec3 refd2 = parallelTransportNormalized(dc.sourceTangent[j], tNew, dc.sourceReferenceDirectors[j].d2);
+    Vec3 refd1 = parallelTransportNormalized<Real_>(dc.sourceTangent[j], tNew, dc.sourceReferenceDirectors[j].d1);
+    Vec3 refd2 = parallelTransportNormalized<Real_>(dc.sourceTangent[j], tNew, dc.sourceReferenceDirectors[j].d2);
 
     Real_ cosTheta =  d2.dot(refd2);
     Real_ sinTheta = -d2.dot(refd1);

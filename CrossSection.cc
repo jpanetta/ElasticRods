@@ -52,7 +52,7 @@ CrossSection::VRep CrossSection::interior(Real triArea) const {
     triArea *= bb.volume();
 
     VRep result;
-    triangulatePSLC(bdry.first, bdry.second, std::vector<Vector2D>(),
+    triangulatePSLG(bdry.first, bdry.second, std::vector<Vector2D>(),
                     result.first, result.second, triArea, "Q");
 
     return result;
