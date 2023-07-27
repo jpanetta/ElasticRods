@@ -784,9 +784,9 @@ void ElasticRod_T<Real_>::hessEnergyStretch(ElasticRod_T<Real_>::CSCMat &H, bool
         // Only two vertices affect edge 'j': vertex 'j' and 'j + 1'
         for (size_t col = 0; col < 3; ++col) {
             // prev-prev, prev-next, next-next
-                         H.addNZ(3 * (j    ), 3 * (    j) + col,  hessianBlock.col(col).head(col + 1)); // d2 / (dx_{    j} dx_{    j})
-            size_t idx = H.addNZ(3 * (j    ), 3 * (j + 1) + col, -hessianBlock.col(col)              ); // d2 / (dx_{    j} dx_{j + 1})
-                         H.addNZ(idx,                             hessianBlock.col(col).head(col + 1)); // d2 / (dx_{j + 1} dx_{j + 1})
+                         H.addNZStrip(3 * (j    ), 3 * (    j) + col,  hessianBlock.col(col).head(col + 1)); // d2 / (dx_{    j} dx_{    j})
+            size_t idx = H.addNZStrip(3 * (j    ), 3 * (j + 1) + col, -hessianBlock.col(col)              ); // d2 / (dx_{    j} dx_{j + 1})
+                         H.addNZStrip(idx,                             hessianBlock.col(col).head(col + 1)); // d2 / (dx_{j + 1} dx_{j + 1})
         }
 
         if (variableRestLen) {
@@ -795,8 +795,8 @@ void ElasticRod_T<Real_>::hessEnergyStretch(ElasticRod_T<Real_>::CSCMat &H, bool
             // (x, restlen) term
             // -(grad l^j) * ks * (l^j / (restLen^j)^2) := -block
             Vec3 block = t * ks * fracLen / m_restLen[j];
-            size_t next_idx = H.addNZ(3 * j, rl_offset, block);
-                              H.addNZ(next_idx,        -block);
+            size_t next_idx = H.addNZStrip(3 * j, rl_offset, block);
+                              H.addNZStrip(next_idx,        -block);
             // (restlen, restlen) term
             H.addNZ(rl_offset, rl_offset, ks * fracLen * fracLen / m_restLen[j]);
         }
@@ -997,9 +997,9 @@ void ElasticRod_T<Real_>::hessEnergyBend(ElasticRod_T<Real_>::CSCMat &H, bool va
         /////////////////////////////////////////////
         // Assemble Hessian blocks into sparse matrix
         /////////////////////////////////////////////
-        for (size_t c1 = 0; c1 < 9; ++c1) H.addNZ(    x_offset,     x_offset + c1, perVertexHessian_x_x.col(c1).head(c1 + 1));
-        for (size_t c1 = 0; c1 < 2; ++c1) H.addNZ(    x_offset, theta_offset + c1, perVertexHessian_x_theta.col(c1));
-        for (size_t c1 = 0; c1 < 2; ++c1) H.addNZ(theta_offset, theta_offset + c1, perVertexHessian_theta_theta.col(c1).head(c1 + 1));
+        for (size_t c1 = 0; c1 < 9; ++c1) H.addDiagNZStrip(x_offset + c1, perVertexHessian_x_x.col(c1).head(c1 + 1));
+        for (size_t c1 = 0; c1 < 2; ++c1) H.addNZStrip    (x_offset, theta_offset + c1, perVertexHessian_x_theta.col(c1));
+        for (size_t c1 = 0; c1 < 2; ++c1) H.addDiagNZStrip(theta_offset + c1, perVertexHessian_theta_theta.col(c1).head(c1 + 1));
 
         /////////////////////////////////////////////
         // Rest length derivatives
@@ -1169,8 +1169,8 @@ void ElasticRod_T<Real_>::hessEnergyTwist(ElasticRod_T<Real_>::CSCMat &H, bool v
                  theta_offset = 3 * nv + (i - 1); // Index of the first theta variable
 
         // Assemble x-x, x-theta partials
-        for (size_t c = 0; c < 9; ++c) H.addNZ(x_offset,     x_offset + c, perVertexHessian_x_x.col(c).head(c + 1));
-        for (size_t c = 0; c < 2; ++c) H.addNZ(x_offset, theta_offset + c, perVertexHessian_x_theta.col(c));
+        for (size_t c = 0; c < 9; ++c) H.addDiagNZStrip(x_offset + c, perVertexHessian_x_x.col(c).head(c + 1));
+        for (size_t c = 0; c < 2; ++c) H.addNZStrip(x_offset, theta_offset + c, perVertexHessian_x_theta.col(c));
 
         // Assemble upper triangle of theta-theta Hessian
         const Real_ coeff = 2.0 * inv_libar2 * m_twistingStiffness[i];
@@ -1274,9 +1274,9 @@ void ElasticRod_T<Real_>::massMatrix(ElasticRod_T<Real_>::CSCMat &M) const {
         // Assemble into global matrix.
         // x-x components:
         for (size_t c = 0; c < 3; ++c) {
-                         M.addNZ(3 * (j    ), 3 * (j    ) + c, M_xjxj.col(c).head(c + 1));
-            size_t idx = M.addNZ(3 * (j    ), 3 * (j + 1) + c, M_xjxjp1.col(c));
-                         M.addNZ(idx,                          M_xjxj.col(c).head(c + 1));
+                         M.addNZStrip(3 * (j    ), 3 * (j    ) + c, M_xjxj.col(c).head(c + 1));
+            size_t idx = M.addNZStrip(3 * (j    ), 3 * (j + 1) + c, M_xjxjp1.col(c));
+                         M.addNZStrip(idx,                          M_xjxj.col(c).head(c + 1));
         }
 
         // x-theta components are zero: perturbing a vertex rotates the director in the tangent direction, while
