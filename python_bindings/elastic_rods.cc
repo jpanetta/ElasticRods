@@ -16,6 +16,7 @@
 #include "visualization.hh"
 
 #include <MeshFEM/GlobalBenchmark.hh>
+#include <MeshFEM/newton_optimizer/newton_optimizer.hh>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/eigen.h>
@@ -666,25 +667,6 @@ PYBIND11_MODULE(elastic_rods, m) {
         .def("fixesVariable", &WorkingSet::fixesVariable)
         .def("size", &WorkingSet::size)
         .def("getFreeComponent", &WorkingSet::getFreeComponent)
-        ;
-
-    py::class_<NewtonOptimizer>(m, "NewtonOptimizer")
-        .def("optimize", &NewtonOptimizer::optimize)
-        // For debugging the Newton step. TODO: support nonempty working sets, different betas
-        .def("newton_step", [](NewtonOptimizer &opt, const bool feasibility) {
-                Eigen::VectorXd step;
-                auto &prob = opt.get_problem();
-                prob.setVars(prob.applyBoundConstraints(prob.getVars()));
-                WorkingSet workingSet(prob);
-
-                Real beta = opt.options.beta;
-                const Real betaMin = std::min(beta, 1e-6); // Initial shift "tau" to use when an indefinite matrix is detected.
-
-                opt.newton_step(step, prob.gradient(false), workingSet, beta, betaMin, feasibility);
-                return step;
-            }, py::arg("feasibility") = false)
-        .def("get_problem", py::overload_cast<>(&NewtonOptimizer::get_problem), py::return_value_policy::reference)
-        .def_readwrite("options", &NewtonOptimizer::options)
         ;
 
     m.attr("TARGET_ANGLE_NONE") = py::float_(TARGET_ANGLE_NONE);

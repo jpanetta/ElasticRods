@@ -6,8 +6,7 @@
 #include <memory>
 #include <limits>
 #include <MeshFEM/Geometry.hh>
-
-#include "newton_optimizer.hh"
+#include <MeshFEM/newton_optimizer/newton_optimizer.hh>
 
 template<class Object>
 void writeIterateFiles(Object &obj, size_t i) {
@@ -63,7 +62,6 @@ struct EquilibriumProblem : NewtonProblem {
         return -external_forces.dot(x);
     }
 
-    virtual SuiteSparseMatrix hessianCSC() const override { m_hessianSparsity.setZero(); object.hessian(m_hessianSparsity); return m_hessianSparsity; }
     virtual SuiteSparseMatrix hessianSparsityPattern() const override { /* m_hessianSparsity.fill(1.0); */ return m_hessianSparsity; }
 
     // "Physical" distance of a step relative to some characteristic lengthscale of the problem.
@@ -107,7 +105,7 @@ struct EquilibriumProblem : NewtonProblem {
 
 protected:
     virtual void m_iterationCallback(size_t /* i */) override { object.updateSourceFrame(); object.updateRotationParametrizations(); }
-    virtual void m_evalHessian(SuiteSparseMatrix &result) const override {
+    virtual void m_evalHessian(SuiteSparseMatrix &result, bool /* projectionMask */) const override {
         result.setZero();
         object.hessian(result);
     }

@@ -116,7 +116,7 @@ find_package(LIBIGL QUIET)
 ################################################################################
 # Elastic Rod Library
 ################################################################################
-add_library(ElasticRods ElasticRod.cc ElasticRodOutput.cc RodMaterial.cc CrossSection.cc eigensolver.cc newton_optimizer.cc)
+add_library(ElasticRods ElasticRod.cc ElasticRodOutput.cc RodMaterial.cc CrossSection.cc eigensolver.cc)
 target_include_directories(ElasticRods SYSTEM PUBLIC ${SPECTRA_INCLUDE_DIR})
 target_link_libraries(ElasticRods MeshFEM VisvalingamSimplify)
 set_target_properties(ElasticRods PROPERTIES CXX_STANDARD 14)

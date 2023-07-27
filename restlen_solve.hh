@@ -5,7 +5,7 @@
 #include <cmath>
 #include <memory>
 
-#include "newton_optimizer.hh"
+#include <MeshFEM/newton_optimizer/newton_optimizer.hh>
 #include "compute_equilibrium.hh"
 
 // Solve an equilibrium problem augemented with rest length variables.
@@ -36,7 +36,6 @@ struct RestLengthProblem : public NewtonProblem {
         return object.restlenSolveGradient(freshIterate, ElasticRod::EnergyType::Full);
     }
 
-    virtual SuiteSparseMatrix hessianCSC() const override { m_hessianSparsity.setZero(); object.restlenSolveHessian(m_hessianSparsity, ElasticRod::EnergyType::Full); return m_hessianSparsity; }
     virtual SuiteSparseMatrix hessianSparsityPattern() const override { return m_hessianSparsity; }
 
     virtual void writeIterateFiles(size_t it) const override { if (writeIterates) { ::writeIterateFiles(object, it); } }
@@ -58,7 +57,7 @@ struct RestLengthProblem : public NewtonProblem {
 private:
     virtual void m_iterationCallback(size_t /* i */) override { object.updateSourceFrame(); }
 
-    virtual void m_evalHessian(SuiteSparseMatrix &result) const override {
+    virtual void m_evalHessian(SuiteSparseMatrix &result, bool /* projectionMask */) const override {
         result.setZero();
         object.restlenSolveHessian(result, ElasticRod::EnergyType::Full);
     }
