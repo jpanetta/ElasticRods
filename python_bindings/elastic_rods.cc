@@ -73,6 +73,7 @@ PYBIND11_MODULE(elastic_rods, m) {
 
     py::module::import("MeshFEM");
     py::module::import("sparse_matrices");
+    py::module::import("py_newton_optimizer");
 
     ////////////////////////////////////////////////////////////////////////////////
     // ElasticRods and nested classes
@@ -610,65 +611,6 @@ PYBIND11_MODULE(elastic_rods, m) {
     ////////////////////////////////////////////////////////////////////////////////
     // Equilibrium solver
     ////////////////////////////////////////////////////////////////////////////////
-    using BC = NewtonProblem::BoundConstraint;
-    py::class_<NewtonProblem::BoundConstraint>(m, "BoundConstraint")
-        .def_readwrite("idx",      &BC::idx)
-        .def_readwrite("val",      &BC::val)
-        .def_readwrite("type",     &BC::type)
-        .def("active",             &BC::active,             py::arg("vars"), py::arg("g"), py::arg("tol") = 1e-8)
-        .def("feasible",           &BC::feasible,           py::arg("vars"))
-        .def("apply",              &BC::apply,              py::arg("vars"))
-        .def("feasibleStepLength", &BC::feasibleStepLength, py::arg("vars"), py::arg("step"))
-        ;
-
-    py::class_<NewtonProblem>(m, "NewtonProblem")
-        .def("energy",                 &NewtonProblem::energy)
-        .def("gradient",               &NewtonProblem::gradient, py::arg("freshIterate") = false)
-        .def("hessian",                &NewtonProblem::hessian)
-        .def("metric",                 &NewtonProblem::metric)
-        .def("fixedVars",              &NewtonProblem::fixedVars)
-        .def("addFixedVariables",      &NewtonProblem::addFixedVariables)
-        .def("getVars",                &NewtonProblem::getVars)
-        .def("setVars",                &NewtonProblem::setVars)
-        .def("applyBoundConstraints",  &NewtonProblem::applyBoundConstraints)
-        .def("activeBoundConstraints", &NewtonProblem::activeBoundConstraints)
-        .def("boundConstraints",       &NewtonProblem::boundConstraints, py::return_value_policy::reference)
-        .def("feasible",               &NewtonProblem::feasible)
-        .def("feasibleStepLength",     py::overload_cast<const Eigen::VectorXd &>(&NewtonProblem::feasibleStepLength, py::const_))
-        .def("iterationCallback",      &NewtonProblem::iterationCallback)
-        ;
-
-    py::class_<ConvergenceReport>(m, "ConvergenceReport")
-        .def_readonly("success",          &ConvergenceReport::success)
-        .def         ("numIters",         &ConvergenceReport::numIters)
-        .def_readonly("energy",           &ConvergenceReport::energy)
-        .def_readonly("gradientNorm",     &ConvergenceReport::gradientNorm)
-        .def_readonly("freeGradientNorm", &ConvergenceReport::freeGradientNorm)
-        .def_readonly("stepLength",       &ConvergenceReport::stepLength)
-        .def_readonly("indefinite",       &ConvergenceReport::indefinite)
-        .def_readonly("customData",       &ConvergenceReport::customData)
-        ;
-
-    py::class_<NewtonOptimizerOptions>(m, "NewtonOptimizerOptions")
-        .def(py::init<>())
-        .def_readwrite("gradTol",                       &NewtonOptimizerOptions::gradTol)
-        .def_readwrite("beta",                          &NewtonOptimizerOptions::beta)
-        .def_readwrite("hessianScaledBeta",             &NewtonOptimizerOptions::hessianScaledBeta)
-        .def_readwrite("niter",                         &NewtonOptimizerOptions::niter)
-        .def_readwrite("useIdentityMetric",             &NewtonOptimizerOptions::useIdentityMetric)
-        .def_readwrite("useNegativeCurvatureDirection", &NewtonOptimizerOptions::useNegativeCurvatureDirection)
-        .def_readwrite("feasibilitySolve",              &NewtonOptimizerOptions::feasibilitySolve)
-        .def_readwrite("verbose",                       &NewtonOptimizerOptions::verbose)
-        ;
-
-    py::class_<WorkingSet>(m, "WorkingSet")
-        .def(py::init<NewtonProblem &>())
-        .def("contains", &WorkingSet::contains)
-        .def("fixesVariable", &WorkingSet::fixesVariable)
-        .def("size", &WorkingSet::size)
-        .def("getFreeComponent", &WorkingSet::getFreeComponent)
-        ;
-
     m.attr("TARGET_ANGLE_NONE") = py::float_(TARGET_ANGLE_NONE);
 
     m.def("compute_equilibrium",
