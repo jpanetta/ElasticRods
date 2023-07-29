@@ -283,6 +283,10 @@ struct ElasticRod_T {
           RodMaterial &material(size_t j = 0)       { if (m_edgeMaterial.size() == 1) return m_edgeMaterial[0]; else return m_edgeMaterial.at(j); }
     const std::vector<RodMaterial> &edgeMaterials() const { return m_edgeMaterial; }
 
+    Real_ crossSectionHeight(size_t j) const {
+        return material(j).crossSectionHeight;
+    }
+
     // Allow manual modification of stretching stiffness
     Real_ &stretchingStiffness(size_t j) { return m_stretchingStiffness[j]; }
 

@@ -342,6 +342,9 @@ RodMaterial::m_computeStiffnesses(Real E, Real nu,
     twistingStiffness *= G;
     torsionStressCoefficient *= G;
 
+    // Note: m_crossSectionMesh has been rotated so that the d2 frame vector is aligned with the y axis.
+    crossSectionHeight = m_crossSectionMesh->boundingBox().dimensions()[1];
+
     youngModulus = E;
     shearModulus = G;
 

@@ -332,15 +332,17 @@ PYBIND11_MODULE(elastic_rods, m) {
         .def_readwrite("crossSectionBoundaryPts",   &RodMaterial::crossSectionBoundaryPts)
         .def_readwrite("crossSectionBoundaryEdges", &RodMaterial::crossSectionBoundaryEdges)
         .def_readwrite("area",                      &RodMaterial::area)
+        .def_readwrite("crossSectionHeight",        &RodMaterial::crossSectionHeight)
         .def("bendingStresses", &RodMaterial::bendingStresses, py::arg("curvatureNormal"))
         .def(py::pickle([](const RodMaterial &mat) {
                     return py::make_tuple(mat.area, mat.stretchingStiffness, mat.twistingStiffness,
                                           mat.bendingStiffness, mat.momentOfInertia,
                                           mat.crossSectionBoundaryPts,
-                                          mat.crossSectionBoundaryEdges);
+                                          mat.crossSectionBoundaryEdges,
+                                          mat.crossSectionHeight);
                 },
                 [](const py::tuple &t) {
-                    if (t.size() != 7) throw std::runtime_error("Invalid state!");
+                    if (t.size() != 8) throw std::runtime_error("Invalid state!");
                     RodMaterial mat;
                     mat.area                      = t[0].cast<Real>();
                     mat.stretchingStiffness       = t[1].cast<Real>();
@@ -349,6 +351,7 @@ PYBIND11_MODULE(elastic_rods, m) {
                     mat.momentOfInertia           = t[4].cast<RodMaterial::DiagonalizedTensor>();
                     mat.crossSectionBoundaryPts   = t[5].cast<RodMaterial::StdVectorPoint2D>();
                     mat.crossSectionBoundaryEdges = t[6].cast<std::vector<std::pair<size_t, size_t>>>();
+                    mat.crossSectionHeight        = t[7].cast<Real>();
 
                     return mat;
                 }))
@@ -388,7 +391,7 @@ PYBIND11_MODULE(elastic_rods, m) {
 
     auto periodic_rod = py::class_<PeriodicRod, std::shared_ptr<PeriodicRod>>(m, "PeriodicRod")
         .def(py::init<std::vector<Point3D>, bool>(), py::arg("pts"), py::arg("zeroRestCurvature") = false)
-        .def(py::init<ElasticRod, Real>(), py::arg("rod"), py::arg("twist"))
+        .def(py::init<ElasticRod, Real>(), py::arg("rod"), py::arg("totalOpeningAngle"))
 
         // Output mesh
         .def("visualizationGeometry", &getVisualizationGeometry<PeriodicRod>, py::arg("averagedMaterialFrames") = true)
@@ -397,23 +400,29 @@ PYBIND11_MODULE(elastic_rods, m) {
         .def("numDoF",                   &PeriodicRod::numDoF)
         .def("numEdges",                 &PeriodicRod::numEdges,    py::arg("countGhost") = false)
         .def("numVertices",              &PeriodicRod::numVertices, py::arg("countGhost") = false)
-        .def("restLengths",              &PeriodicRod::restLengths)
         .def("restLength",               &PeriodicRod::restLength)
-        .def("thetas",                   &PeriodicRod::thetas)
+        .def("setDeformedConfiguration", py::overload_cast<const std::vector<Eigen::Vector3d> &, const std::vector<Real> &>      (&PeriodicRod::setDeformedConfiguration), py::arg("points"), py::arg("thetas"))
+        .def("setDeformedConfiguration", py::overload_cast<const std::vector<Eigen::Vector3d> &, const std::vector<Real> &, Real>(&PeriodicRod::setDeformedConfiguration), py::arg("points"), py::arg("thetas"), py::arg("totalOpeningAngle"))
+        .def("setDoFs",                  &PeriodicRod::setDoFs,  py::arg("dofs"))
+        .def("getDoFs",                  &PeriodicRod::getDoFs)
+
+        .def("twist",                    &PeriodicRod::twist)
         .def("totalTwistAngle",          &PeriodicRod::totalTwistAngle)
         .def("totalReferenceTwistAngle", &PeriodicRod::totalReferenceTwistAngle)
         .def("openingAngle",             &PeriodicRod::openingAngle)
         .def("writhe",                   &PeriodicRod::writhe)
-        .def("binormals",                &PeriodicRod::binormals, py::arg("normalize") = true, py::arg("transport_on_straight") = false)
-        .def("deformedLengths",          &PeriodicRod::deformedLengths)
+        .def("link",                     &PeriodicRod::link)
+
         .def("deformedPoints",           &PeriodicRod::deformedPoints)
+        .def("thetas",                   &PeriodicRod::thetas)
+        .def("deformedLengths",          &PeriodicRod::deformedLengths)
+        .def("restLengths",              &PeriodicRod::restLengths)
         .def("maxBendingStresses",       &PeriodicRod::maxBendingStresses)
-        .def("curvature",                &PeriodicRod::curvature, py::arg("discretization") = PeriodicRod::CurvatureDiscretizationType::Sine, py::arg("pointwise") = true)
-        .def("torsion",                  &PeriodicRod::torsion, py::arg("discretization") = PeriodicRod::CurvatureDiscretizationType::Sine, py::arg("pointwise") = true)
-        .def("setDeformedConfiguration", py::overload_cast<const std::vector<Eigen::Vector3d> &, const std::vector<Real> &>      (&PeriodicRod::setDeformedConfiguration), py::arg("points"), py::arg("thetas"))
-        .def("setDeformedConfiguration", py::overload_cast<const std::vector<Eigen::Vector3d> &, const std::vector<Real> &, Real>(&PeriodicRod::setDeformedConfiguration), py::arg("points"), py::arg("thetas"), py::arg("twist"))
-        .def("setDoFs",                  &PeriodicRod::setDoFs,  py::arg("dofs"))
-        .def("getDoFs",                  &PeriodicRod::getDoFs)
+
+        .def("binormals",                &PeriodicRod::binormals, py::arg("normalize") = true, py::arg("transport_on_straight") = false)
+        .def("curvature",                &PeriodicRod::curvature, py::arg("discretization") = PeriodicRod::CurvatureDiscretizationType::Angle, py::arg("pointwise") = true)
+        .def("torsion",                  &PeriodicRod::torsion, py::arg("discretization") = PeriodicRod::CurvatureDiscretizationType::Angle, py::arg("pointwise") = true)
+        
         .def("energy",                   &PeriodicRod::energy,   py::arg("energyType") = ElasticRod::EnergyType::Full)
         .def("energyStretch",            &PeriodicRod::energyStretch)
         .def("energyBend",               &PeriodicRod::energyBend)
@@ -428,7 +437,7 @@ PYBIND11_MODULE(elastic_rods, m) {
                 return Htrip; },  py::arg("energyType") = ElasticRod::EnergyType::Full)
         .def("thetaOffset",  &PeriodicRod::thetaOffset)
         .def_readonly("rod", &PeriodicRod::rod, py::return_value_policy::reference)
-        .def_property("twist", &PeriodicRod::twist, &PeriodicRod::setTwist, "Twist discontinuity passing from last edge back to (overlapping) first")
+        .def_property("totalOpeningAngle", &PeriodicRod::totalOpeningAngle, &PeriodicRod::setTotalOpeningAngle, "Twist discontinuity passing from last edge back to (overlapping) first")
         .def(py::pickle([](const PeriodicRod &pr) { return py::make_tuple(pr.rod, pr.twist()); },
                         [](const py::tuple &t) {
                             if (t.size() != 2) throw std::runtime_error("Invalid state!");
