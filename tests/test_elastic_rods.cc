@@ -7,7 +7,7 @@
 #include <MeshFEM/GaussQuadrature.hh>
 #include "../compute_equilibrium.hh"
 #include "../knitro_solver.hh"
-#include "../AutomaticDifferentiation.hh"
+#include <MeshFEM/AutomaticDifferentiation.hh>
 
 // Generate random number in the range [-1, 1]
 Real randUniform() { return 2 * (rand() / double(RAND_MAX)) - 1.0; }

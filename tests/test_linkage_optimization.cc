@@ -26,9 +26,6 @@ int main(int argc, const char * argv[]) {
         exit(-1);
     }
     const std::string &linkageGraph = argv[1];
-#if MESHFEM_WITH_TBB
-    tbb::task_scheduler_init init(4);
-#endif
 
     Real fd_eps = 1e-8;
     if (argc >= 4) { fd_eps = std::stod(argv[3]); }

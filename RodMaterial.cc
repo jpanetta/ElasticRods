@@ -110,7 +110,7 @@ void RodMaterial::setContour(Real E, Real nu, const std::string &path, Real scal
     // Triangulate the contour
     std::vector<MeshIO::IOVertex > triangulatedVertices;
     std::vector<MeshIO::IOElement> triangles;
-    triangulatePSLC(crossSectionBoundaryPts, crossSectionBoundaryEdges, holePts,
+    triangulatePSLG(crossSectionBoundaryPts, crossSectionBoundaryEdges, holePts,
                     triangulatedVertices, triangles, triArea * bb.volume(), "Q");
 
     Eigen::Matrix2d R;
@@ -341,6 +341,9 @@ RodMaterial::m_computeStiffnesses(Real E, Real nu,
     }
     twistingStiffness *= G;
     torsionStressCoefficient *= G;
+
+    // Note: m_crossSectionMesh has been rotated so that the d2 frame vector is aligned with the y axis.
+    crossSectionHeight = m_crossSectionMesh->boundingBox().dimensions()[1];
 
     youngModulus = E;
     shearModulus = G;

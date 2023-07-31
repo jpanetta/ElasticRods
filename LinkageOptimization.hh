@@ -137,8 +137,8 @@ struct LinkageOptimization {
         m_deployed.set(m_linesearch_deployed);
         // Stash the current factorizations to be reused at each step of the linesearch
         // to predict the equilibrium at the new design parameters.
-        getFlatOptimizer()    .solver.stashFactorization();
-        getDeployedOptimizer().solver.stashFactorization();
+        getFlatOptimizer()    .solver().stashFactorization();
+        getDeployedOptimizer().solver().stashFactorization();
     }
 
     Real getTargetAngle() const { return m_alpha_tgt; }

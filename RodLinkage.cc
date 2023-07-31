@@ -9,7 +9,7 @@
 #include <MeshFEM/MSHFieldWriter.hh>
 #include <MeshFEM/utils.hh>
 #include <MeshFEM/filters/merge_duplicate_vertices.hh>
-#include "VectorOperations.hh"
+#include <MeshFEM/Geometry.hh>
 #if MESHFEM_WITH_TBB
 #include <tbb/tbb.h>
 #include <tbb/parallel_for.h>

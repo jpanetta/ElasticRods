@@ -39,7 +39,7 @@
 
 #include "ElasticRod.hh"
 #include "TemplatedTypes.hh"
-#include "AutomaticDifferentiation.hh"
+#include <MeshFEM/AutomaticDifferentiation.hh>
 #include "RectangularBox.hh"
 #include <rotation_optimization.hh>
 #include <array>

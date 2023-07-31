@@ -90,6 +90,7 @@ struct RodMaterial {
 
         youngModulus = E;
         shearModulus = G;
+        crossSectionHeight = std::min(a, b);
         // TODO: torsionStressCoefficient...
     }
 
@@ -145,6 +146,9 @@ struct RodMaterial {
     StdVectorPoint2D crossSectionBoundaryPts;
     std::vector<std::pair<size_t, size_t>> crossSectionBoundaryEdges;
 
+    // Used for offsetting rods to be in contact at joints.
+    Real crossSectionHeight = 0.0;
+    
     // Destructor must be implemented in .cc because of forward-declared CrossSectionMesh.
     ~RodMaterial();
     

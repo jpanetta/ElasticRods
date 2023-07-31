@@ -2,10 +2,10 @@
 #include <stdexcept>
 #include <cmath>
 #include <MeshFEM/GlobalBenchmark.hh>
-#include "VectorOperations.hh"
+#include <MeshFEM/Geometry.hh>
 #include "SparseMatrixOps.hh"
 #include <MeshFEM/unused.hh>
-#include "AutomaticDifferentiation.hh"
+#include <MeshFEM/AutomaticDifferentiation.hh>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Geometric operations
@@ -53,7 +53,7 @@ void ElasticRod_T<Real_>::setRestConfiguration(const std::vector<Pt3_T<Real_>> &
     // Parallel transport this reference vector to the remaining rod edges
     for (size_t i = 1; i < ne; ++i) {
         rest_d1.emplace_back(
-            parallelTransportNormalized(unit_tangents[i - 1], unit_tangents[i],
+            parallelTransportNormalized<Real_>(unit_tangents[i - 1], unit_tangents[i],
                                         rest_d1.back()));
     }
 
@@ -153,8 +153,8 @@ void ElasticRod_T<Real_>::DeformedState::update(const std::vector<Pt3_T<Real_>> 
         len[j] = tangent[j].norm();
         tangent[j] /= len[j];
 
-        referenceDirectors.emplace_back(parallelTransportNormalized(sourceTangent[j], tangent[j], sourceReferenceDirectors[j].d1),
-                                        parallelTransportNormalized(sourceTangent[j], tangent[j], sourceReferenceDirectors[j].d2));
+        referenceDirectors.emplace_back(parallelTransportNormalized<Real_>(sourceTangent[j], tangent[j], sourceReferenceDirectors[j].d1),
+                                        parallelTransportNormalized<Real_>(sourceTangent[j], tangent[j], sourceReferenceDirectors[j].d2));
     }
 
     // Compute twist of the transported reference directors from one edge to the next
@@ -164,7 +164,7 @@ void ElasticRod_T<Real_>::DeformedState::update(const std::vector<Pt3_T<Real_>> 
         // Finite rotation angle needed to take the parallel transported copy
         // of the previous edge's reference director to the current edge's
         // reference director.
-        Vec3 prevDirectorTransported = parallelTransportNormalized(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d1);
+        Vec3 prevDirectorTransported = parallelTransportNormalized<Real_>(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d1);
         referenceTwist[i] = angle(tangent[i], prevDirectorTransported, referenceDirectors[i].d1);
 
         // Temporal coherence: to avoid jumps in the material frame twist of 2 pi,
@@ -213,8 +213,8 @@ void ElasticRod_T<Real_>::DeformedState::setReferenceTwist(Real_ newTwist) {
     const size_t nv = m_point.size();
     Real_ referenceRotation = 0;
     for (size_t i = 1; i < nv - 1; ++i) {
-        Vec3 prevD1Transported = parallelTransportNormalized(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d1),
-             prevD2Transported = parallelTransportNormalized(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d2);
+        Vec3 prevD1Transported = parallelTransportNormalized<Real_>(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d1),
+             prevD2Transported = parallelTransportNormalized<Real_>(tangent[i - 1], tangent[i], referenceDirectors[i - 1].d2);
 
         referenceDirectors[i].d1 = rotatedVectorAngle(tangent[i], newTwist, prevD1Transported);
         referenceDirectors[i].d2 = rotatedVectorAngle(tangent[i], newTwist, prevD2Transported);
@@ -238,8 +238,8 @@ template<typename Real_>
 Vec3_T<Real_> ElasticRod_T<Real_>::materialFrameD2ForTheta(Real_ theta, const Vec3_T<Real_> &eNew, size_t j) const {
     // Determine parallel-transported directors (from source tangent vector to eNew)
     const auto &dc = deformedConfiguration();
-    Vec3 refd1 = parallelTransportNormalized(dc.sourceTangent[j], eNew.normalized(), dc.sourceReferenceDirectors[j].d1);
-    Vec3 refd2 = parallelTransportNormalized(dc.sourceTangent[j], eNew.normalized(), dc.sourceReferenceDirectors[j].d2);
+    Vec3 refd1 = parallelTransportNormalized<Real_>(dc.sourceTangent[j], eNew.normalized(), dc.sourceReferenceDirectors[j].d1);
+    Vec3 refd2 = parallelTransportNormalized<Real_>(dc.sourceTangent[j], eNew.normalized(), dc.sourceReferenceDirectors[j].d2);
     // std::cout << "sourceTangent: " << dc.sourceTangent[j].transpose() << std::endl;
     // std::cout << "refd1: " << refd1.transpose() << std::endl;
     // std::cout << "refd2: " << refd2.transpose() << std::endl;
@@ -268,8 +268,8 @@ Real_ ElasticRod_T<Real_>::thetaForMaterialFrameD2(Vec3_T<Real_> d2, const Vec3_
 
     // Determine parallel-transported directors (from source tangent vector to eNew)
     Vec3 tNew = eNew.normalized();
-    Vec3 refd1 = parallelTransportNormalized(dc.sourceTangent[j], tNew, dc.sourceReferenceDirectors[j].d1);
-    Vec3 refd2 = parallelTransportNormalized(dc.sourceTangent[j], tNew, dc.sourceReferenceDirectors[j].d2);
+    Vec3 refd1 = parallelTransportNormalized<Real_>(dc.sourceTangent[j], tNew, dc.sourceReferenceDirectors[j].d1);
+    Vec3 refd2 = parallelTransportNormalized<Real_>(dc.sourceTangent[j], tNew, dc.sourceReferenceDirectors[j].d2);
 
     Real_ cosTheta =  d2.dot(refd2);
     Real_ sinTheta = -d2.dot(refd1);
@@ -784,9 +784,9 @@ void ElasticRod_T<Real_>::hessEnergyStretch(ElasticRod_T<Real_>::CSCMat &H, bool
         // Only two vertices affect edge 'j': vertex 'j' and 'j + 1'
         for (size_t col = 0; col < 3; ++col) {
             // prev-prev, prev-next, next-next
-                         H.addNZ(3 * (j    ), 3 * (    j) + col,  hessianBlock.col(col).head(col + 1)); // d2 / (dx_{    j} dx_{    j})
-            size_t idx = H.addNZ(3 * (j    ), 3 * (j + 1) + col, -hessianBlock.col(col)              ); // d2 / (dx_{    j} dx_{j + 1})
-                         H.addNZ(idx,                             hessianBlock.col(col).head(col + 1)); // d2 / (dx_{j + 1} dx_{j + 1})
+                         H.addNZStrip(3 * (j    ), 3 * (    j) + col,  hessianBlock.col(col).head(col + 1)); // d2 / (dx_{    j} dx_{    j})
+            size_t idx = H.addNZStrip(3 * (j    ), 3 * (j + 1) + col, -hessianBlock.col(col)              ); // d2 / (dx_{    j} dx_{j + 1})
+                         H.addNZStrip(idx,                             hessianBlock.col(col).head(col + 1)); // d2 / (dx_{j + 1} dx_{j + 1})
         }
 
         if (variableRestLen) {
@@ -795,8 +795,8 @@ void ElasticRod_T<Real_>::hessEnergyStretch(ElasticRod_T<Real_>::CSCMat &H, bool
             // (x, restlen) term
             // -(grad l^j) * ks * (l^j / (restLen^j)^2) := -block
             Vec3 block = t * ks * fracLen / m_restLen[j];
-            size_t next_idx = H.addNZ(3 * j, rl_offset, block);
-                              H.addNZ(next_idx,        -block);
+            size_t next_idx = H.addNZStrip(3 * j, rl_offset, block);
+                              H.addNZStrip(next_idx,        -block);
             // (restlen, restlen) term
             H.addNZ(rl_offset, rl_offset, ks * fracLen * fracLen / m_restLen[j]);
         }
@@ -997,9 +997,9 @@ void ElasticRod_T<Real_>::hessEnergyBend(ElasticRod_T<Real_>::CSCMat &H, bool va
         /////////////////////////////////////////////
         // Assemble Hessian blocks into sparse matrix
         /////////////////////////////////////////////
-        for (size_t c1 = 0; c1 < 9; ++c1) H.addNZ(    x_offset,     x_offset + c1, perVertexHessian_x_x.col(c1).head(c1 + 1));
-        for (size_t c1 = 0; c1 < 2; ++c1) H.addNZ(    x_offset, theta_offset + c1, perVertexHessian_x_theta.col(c1));
-        for (size_t c1 = 0; c1 < 2; ++c1) H.addNZ(theta_offset, theta_offset + c1, perVertexHessian_theta_theta.col(c1).head(c1 + 1));
+        for (size_t c1 = 0; c1 < 9; ++c1) H.addDiagNZStrip(x_offset + c1, perVertexHessian_x_x.col(c1).head(c1 + 1));
+        for (size_t c1 = 0; c1 < 2; ++c1) H.addNZStrip    (x_offset, theta_offset + c1, perVertexHessian_x_theta.col(c1));
+        for (size_t c1 = 0; c1 < 2; ++c1) H.addDiagNZStrip(theta_offset + c1, perVertexHessian_theta_theta.col(c1).head(c1 + 1));
 
         /////////////////////////////////////////////
         // Rest length derivatives
@@ -1169,8 +1169,8 @@ void ElasticRod_T<Real_>::hessEnergyTwist(ElasticRod_T<Real_>::CSCMat &H, bool v
                  theta_offset = 3 * nv + (i - 1); // Index of the first theta variable
 
         // Assemble x-x, x-theta partials
-        for (size_t c = 0; c < 9; ++c) H.addNZ(x_offset,     x_offset + c, perVertexHessian_x_x.col(c).head(c + 1));
-        for (size_t c = 0; c < 2; ++c) H.addNZ(x_offset, theta_offset + c, perVertexHessian_x_theta.col(c));
+        for (size_t c = 0; c < 9; ++c) H.addDiagNZStrip(x_offset + c, perVertexHessian_x_x.col(c).head(c + 1));
+        for (size_t c = 0; c < 2; ++c) H.addNZStrip(x_offset, theta_offset + c, perVertexHessian_x_theta.col(c));
 
         // Assemble upper triangle of theta-theta Hessian
         const Real_ coeff = 2.0 * inv_libar2 * m_twistingStiffness[i];
@@ -1274,9 +1274,9 @@ void ElasticRod_T<Real_>::massMatrix(ElasticRod_T<Real_>::CSCMat &M) const {
         // Assemble into global matrix.
         // x-x components:
         for (size_t c = 0; c < 3; ++c) {
-                         M.addNZ(3 * (j    ), 3 * (j    ) + c, M_xjxj.col(c).head(c + 1));
-            size_t idx = M.addNZ(3 * (j    ), 3 * (j + 1) + c, M_xjxjp1.col(c));
-                         M.addNZ(idx,                          M_xjxj.col(c).head(c + 1));
+                         M.addNZStrip(3 * (j    ), 3 * (j    ) + c, M_xjxj.col(c).head(c + 1));
+            size_t idx = M.addNZStrip(3 * (j    ), 3 * (j + 1) + c, M_xjxjp1.col(c));
+                         M.addNZStrip(idx,                          M_xjxj.col(c).head(c + 1));
         }
 
         // x-theta components are zero: perturbing a vertex rotates the director in the tangent direction, while

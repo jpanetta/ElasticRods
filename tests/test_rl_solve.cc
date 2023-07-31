@@ -13,14 +13,6 @@ int main(int argc, const char * argv[]) {
     const std::string &linkageGraph = argv[1];
     const size_t constrained_joint_idx = std::stoi(argv[3]);
 
-#if MESHFEM_WITH_TBB
-    size_t np = tbb::task_scheduler_init::default_num_threads();
-    if (argc == 5) {
-        np = std::stoi(argv[4]);
-    }
-    tbb::task_scheduler_init init(np);
-#endif
-
     RodMaterial mat(*CrossSection::load(argv[2]));
 
     RodLinkage linkage(linkageGraph, 10);

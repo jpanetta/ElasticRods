@@ -4,6 +4,7 @@
 #include <utility>
 #include <memory>
 #include "../ElasticRod.hh"
+#include "../PeriodicRod.hh"
 #include "../RodLinkage.hh"
 #include "../compute_equilibrium.hh"
 #include "../LinkageOptimization.hh"
@@ -15,16 +16,12 @@
 #include "visualization.hh"
 
 #include <MeshFEM/GlobalBenchmark.hh>
+#include <MeshFEM/newton_optimizer/newton_optimizer.hh>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/eigen.h>
 #include <pybind11/iostream.h>
 namespace py = pybind11;
-
-#if MESHFEM_WITH_TBB
-// For control over parallelism
-std::unique_ptr<tbb::task_scheduler_init> g_task_scheduler_init;
-#endif
 
 template<typename T>
 std::string hexString(T val) {
@@ -76,6 +73,7 @@ PYBIND11_MODULE(elastic_rods, m) {
 
     py::module::import("MeshFEM");
     py::module::import("sparse_matrices");
+    py::module::import("py_newton_optimizer");
 
     ////////////////////////////////////////////////////////////////////////////////
     // ElasticRods and nested classes
@@ -334,15 +332,17 @@ PYBIND11_MODULE(elastic_rods, m) {
         .def_readwrite("crossSectionBoundaryPts",   &RodMaterial::crossSectionBoundaryPts)
         .def_readwrite("crossSectionBoundaryEdges", &RodMaterial::crossSectionBoundaryEdges)
         .def_readwrite("area",                      &RodMaterial::area)
+        .def_readwrite("crossSectionHeight",        &RodMaterial::crossSectionHeight)
         .def("bendingStresses", &RodMaterial::bendingStresses, py::arg("curvatureNormal"))
         .def(py::pickle([](const RodMaterial &mat) {
                     return py::make_tuple(mat.area, mat.stretchingStiffness, mat.twistingStiffness,
                                           mat.bendingStiffness, mat.momentOfInertia,
                                           mat.crossSectionBoundaryPts,
-                                          mat.crossSectionBoundaryEdges);
+                                          mat.crossSectionBoundaryEdges,
+                                          mat.crossSectionHeight);
                 },
                 [](const py::tuple &t) {
-                    if (t.size() != 7) throw std::runtime_error("Invalid state!");
+                    if (t.size() != 8) throw std::runtime_error("Invalid state!");
                     RodMaterial mat;
                     mat.area                      = t[0].cast<Real>();
                     mat.stretchingStiffness       = t[1].cast<Real>();
@@ -351,6 +351,7 @@ PYBIND11_MODULE(elastic_rods, m) {
                     mat.momentOfInertia           = t[4].cast<RodMaterial::DiagonalizedTensor>();
                     mat.crossSectionBoundaryPts   = t[5].cast<RodMaterial::StdVectorPoint2D>();
                     mat.crossSectionBoundaryEdges = t[6].cast<std::vector<std::pair<size_t, size_t>>>();
+                    mat.crossSectionHeight        = t[7].cast<Real>();
 
                     return mat;
                 }))
@@ -377,6 +378,73 @@ PYBIND11_MODULE(elastic_rods, m) {
         .def(py::init<const std::string>(), py::arg("path"))
         .def("contains", &RectangularBoxCollection::contains, py::arg("p"))
         .def("visualizationGeometry", &getVisualizationGeometry<RectangularBoxCollection>)
+        ;
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // PeriodicRod
+    ////////////////////////////////////////////////////////////////////////////////
+    py::enum_<PeriodicRod::CurvatureDiscretizationType>(m, "CurvatureDiscretizationType")
+        .value("Tangent",           PeriodicRod::CurvatureDiscretizationType::Tangent)
+        .value("Sine",              PeriodicRod::CurvatureDiscretizationType::Sine)
+        .value("Angle",             PeriodicRod::CurvatureDiscretizationType::Angle)
+        ;
+
+    auto periodic_rod = py::class_<PeriodicRod, std::shared_ptr<PeriodicRod>>(m, "PeriodicRod")
+        .def(py::init<std::vector<Point3D>, bool>(), py::arg("pts"), py::arg("zeroRestCurvature") = false)
+        .def(py::init<ElasticRod, Real>(), py::arg("rod"), py::arg("totalOpeningAngle"))
+
+        // Output mesh
+        .def("visualizationGeometry", &getVisualizationGeometry<PeriodicRod>, py::arg("averagedMaterialFrames") = true)
+
+        .def("setMaterial",              &PeriodicRod::setMaterial, py::arg("material"))
+        .def("numDoF",                   &PeriodicRod::numDoF)
+        .def("numEdges",                 &PeriodicRod::numEdges,    py::arg("countGhost") = false)
+        .def("numVertices",              &PeriodicRod::numVertices, py::arg("countGhost") = false)
+        .def("restLength",               &PeriodicRod::restLength)
+        .def("setDeformedConfiguration", py::overload_cast<const std::vector<Eigen::Vector3d> &, const std::vector<Real> &>      (&PeriodicRod::setDeformedConfiguration), py::arg("points"), py::arg("thetas"))
+        .def("setDeformedConfiguration", py::overload_cast<const std::vector<Eigen::Vector3d> &, const std::vector<Real> &, Real>(&PeriodicRod::setDeformedConfiguration), py::arg("points"), py::arg("thetas"), py::arg("totalOpeningAngle"))
+        .def("setDoFs",                  &PeriodicRod::setDoFs,  py::arg("dofs"))
+        .def("getDoFs",                  &PeriodicRod::getDoFs)
+
+        .def("twist",                    &PeriodicRod::twist)
+        .def("totalTwistAngle",          &PeriodicRod::totalTwistAngle)
+        .def("totalReferenceTwistAngle", &PeriodicRod::totalReferenceTwistAngle)
+        .def("openingAngle",             &PeriodicRod::openingAngle)
+        .def("writhe",                   &PeriodicRod::writhe)
+        .def("link",                     &PeriodicRod::link)
+
+        .def("deformedPoints",           &PeriodicRod::deformedPoints)
+        .def("thetas",                   &PeriodicRod::thetas)
+        .def("deformedLengths",          &PeriodicRod::deformedLengths)
+        .def("restLengths",              &PeriodicRod::restLengths)
+        .def("maxBendingStresses",       &PeriodicRod::maxBendingStresses)
+
+        .def("binormals",                &PeriodicRod::binormals, py::arg("normalize") = true, py::arg("transport_on_straight") = false)
+        .def("curvature",                &PeriodicRod::curvature, py::arg("discretization") = PeriodicRod::CurvatureDiscretizationType::Angle, py::arg("pointwise") = true)
+        .def("torsion",                  &PeriodicRod::torsion, py::arg("discretization") = PeriodicRod::CurvatureDiscretizationType::Angle, py::arg("pointwise") = true)
+        
+        .def("energy",                   &PeriodicRod::energy,   py::arg("energyType") = ElasticRod::EnergyType::Full)
+        .def("energyStretch",            &PeriodicRod::energyStretch)
+        .def("energyBend",               &PeriodicRod::energyBend)
+        .def("energyTwist",              &PeriodicRod::energyTwist)
+        .def("gradient",                 &PeriodicRod::gradient, py::arg("updatedSource") = false, py::arg("energyType") = ElasticRod::EnergyType::Full)
+        .def("hessianSparsityPattern",   &PeriodicRod::hessianSparsityPattern, py::arg("val") = 0.0)
+        .def("hessian",                [](const PeriodicRod &r, PeriodicRod::EnergyType etype) {
+                PeriodicRod::CSCMat H;
+                r.hessian(H, etype);
+                ElasticRod::TMatrix Htrip = H.getTripletMatrix();
+                Htrip.symmetry_mode = ElasticRod::TMatrix::SymmetryMode::UPPER_TRIANGLE;
+                return Htrip; },  py::arg("energyType") = ElasticRod::EnergyType::Full)
+        .def("thetaOffset",  &PeriodicRod::thetaOffset)
+        .def_readonly("rod", &PeriodicRod::rod, py::return_value_policy::reference)
+        .def_property("totalOpeningAngle", &PeriodicRod::totalOpeningAngle, &PeriodicRod::setTotalOpeningAngle, "Twist discontinuity passing from last edge back to (overlapping) first")
+        .def(py::pickle([](const PeriodicRod &pr) { return py::make_tuple(pr.rod, pr.twist()); },
+                        [](const py::tuple &t) {
+                            if (t.size() != 2) throw std::runtime_error("Invalid state!");
+                            PeriodicRod pr(t[0].cast<ElasticRod>(), t[1].cast<Real>());
+                            return pr;
+                        })
+            )
         ;
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -552,84 +620,6 @@ PYBIND11_MODULE(elastic_rods, m) {
     ////////////////////////////////////////////////////////////////////////////////
     // Equilibrium solver
     ////////////////////////////////////////////////////////////////////////////////
-    using BC = NewtonProblem::BoundConstraint;
-    py::class_<NewtonProblem::BoundConstraint>(m, "BoundConstraint")
-        .def_readwrite("idx",      &BC::idx)
-        .def_readwrite("val",      &BC::val)
-        .def_readwrite("type",     &BC::type)
-        .def("active",             &BC::active,             py::arg("vars"), py::arg("g"), py::arg("tol") = 1e-8)
-        .def("feasible",           &BC::feasible,           py::arg("vars"))
-        .def("apply",              &BC::apply,              py::arg("vars"))
-        .def("feasibleStepLength", &BC::feasibleStepLength, py::arg("vars"), py::arg("step"))
-        ;
-
-    py::class_<NewtonProblem>(m, "NewtonProblem")
-        .def("energy",                 &NewtonProblem::energy)
-        .def("gradient",               &NewtonProblem::gradient, py::arg("freshIterate") = false)
-        .def("hessian",                &NewtonProblem::hessian)
-        .def("metric",                 &NewtonProblem::metric)
-        .def("fixedVars",              &NewtonProblem::fixedVars)
-        .def("addFixedVariables",      &NewtonProblem::addFixedVariables)
-        .def("getVars",                &NewtonProblem::getVars)
-        .def("setVars",                &NewtonProblem::setVars)
-        .def("applyBoundConstraints",  &NewtonProblem::applyBoundConstraints)
-        .def("activeBoundConstraints", &NewtonProblem::activeBoundConstraints)
-        .def("boundConstraints",       &NewtonProblem::boundConstraints, py::return_value_policy::reference)
-        .def("feasible",               &NewtonProblem::feasible)
-        .def("feasibleStepLength",     py::overload_cast<const Eigen::VectorXd &>(&NewtonProblem::feasibleStepLength, py::const_))
-        .def("iterationCallback",      &NewtonProblem::iterationCallback)
-        ;
-
-    py::class_<ConvergenceReport>(m, "ConvergenceReport")
-        .def_readonly("success",          &ConvergenceReport::success)
-        .def         ("numIters",         &ConvergenceReport::numIters)
-        .def_readonly("energy",           &ConvergenceReport::energy)
-        .def_readonly("gradientNorm",     &ConvergenceReport::gradientNorm)
-        .def_readonly("freeGradientNorm", &ConvergenceReport::freeGradientNorm)
-        .def_readonly("stepLength",       &ConvergenceReport::stepLength)
-        .def_readonly("indefinite",       &ConvergenceReport::indefinite)
-        .def_readonly("customData",       &ConvergenceReport::customData)
-        ;
-
-    py::class_<NewtonOptimizerOptions>(m, "NewtonOptimizerOptions")
-        .def(py::init<>())
-        .def_readwrite("gradTol",                       &NewtonOptimizerOptions::gradTol)
-        .def_readwrite("beta",                          &NewtonOptimizerOptions::beta)
-        .def_readwrite("hessianScaledBeta",             &NewtonOptimizerOptions::hessianScaledBeta)
-        .def_readwrite("niter",                         &NewtonOptimizerOptions::niter)
-        .def_readwrite("useIdentityMetric",             &NewtonOptimizerOptions::useIdentityMetric)
-        .def_readwrite("useNegativeCurvatureDirection", &NewtonOptimizerOptions::useNegativeCurvatureDirection)
-        .def_readwrite("feasibilitySolve",              &NewtonOptimizerOptions::feasibilitySolve)
-        .def_readwrite("verbose",                       &NewtonOptimizerOptions::verbose)
-        ;
-
-    py::class_<WorkingSet>(m, "WorkingSet")
-        .def(py::init<NewtonProblem &>())
-        .def("contains", &WorkingSet::contains)
-        .def("fixesVariable", &WorkingSet::fixesVariable)
-        .def("size", &WorkingSet::size)
-        .def("getFreeComponent", &WorkingSet::getFreeComponent)
-        ;
-
-    py::class_<NewtonOptimizer>(m, "NewtonOptimizer")
-        .def("optimize", &NewtonOptimizer::optimize)
-        // For debugging the Newton step. TODO: support nonempty working sets, different betas
-        .def("newton_step", [](NewtonOptimizer &opt, const bool feasibility) {
-                Eigen::VectorXd step;
-                auto &prob = opt.get_problem();
-                prob.setVars(prob.applyBoundConstraints(prob.getVars()));
-                WorkingSet workingSet(prob);
-
-                Real beta = opt.options.beta;
-                const Real betaMin = std::min(beta, 1e-6); // Initial shift "tau" to use when an indefinite matrix is detected.
-
-                opt.newton_step(step, prob.gradient(false), workingSet, beta, betaMin, feasibility);
-                return step;
-            }, py::arg("feasibility") = false)
-        .def("get_problem", py::overload_cast<>(&NewtonOptimizer::get_problem), py::return_value_policy::reference)
-        .def_readwrite("options", &NewtonOptimizer::options)
-        ;
-
     m.attr("TARGET_ANGLE_NONE") = py::float_(TARGET_ANGLE_NONE);
 
     m.def("compute_equilibrium",
@@ -846,15 +836,6 @@ PYBIND11_MODULE(elastic_rods, m) {
         },
         py::arg("include_messages") = false)
         ;
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // Control parallelism
-    ////////////////////////////////////////////////////////////////////////////////
-#if MESHFEM_WITH_TBB
-    m.def("set_max_num_tbb_threads", [&](size_t numThreads) {
-        g_task_scheduler_init = std::make_unique<tbb::task_scheduler_init>(numThreads);
-    });
-#endif
 
     ////////////////////////////////////////////////////////////////////////////
     // Free-standing output functions

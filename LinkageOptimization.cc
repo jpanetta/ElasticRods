@@ -142,10 +142,10 @@ bool LinkageOptimization::m_updateEquilibria(const Eigen::Ref<const Eigen::Vecto
         // (i.e. for the equilibrium stored in m_flat and m_deployed).
         auto &opt_2D = getFlatOptimizer();
         auto &opt_3D = getDeployedOptimizer();
-        if (!(opt_2D.solver.hasStashedFactorization() && opt_3D.solver.hasStashedFactorization()))
+        if (!(opt_2D.solver().hasStashedFactorization() && opt_3D.solver().hasStashedFactorization()))
             throw std::runtime_error("Factorization was not stashed... was commitLinesearchLinkage() called?");
-        opt_2D.solver.swapStashedFactorization();
-        opt_3D.solver.swapStashedFactorization();
+        opt_2D.solver().swapStashedFactorization();
+        opt_3D.solver().swapStashedFactorization();
 
         {
             // Solve for equilibrium perturbation corresponding to delta_p:
@@ -163,10 +163,10 @@ bool LinkageOptimization::m_updateEquilibria(const Eigen::Ref<const Eigen::Vecto
             mask_dxdp.dof_in      = false;
             mask_dxdp.restlen_out = false;
 
-            m_delta_x3d = opt_3D.extractFullSolution(opt_3D.kkt_solver(opt_3D.solver, opt_3D.removeFixedEntries(m_deployed.applyHessianPerSegmentRestlen(neg_deltap_padded, mask_dxdp).head(nd))));
+            m_delta_x3d = opt_3D.extractFullSolution(opt_3D.kkt_solver(opt_3D.solver(), opt_3D.removeFixedEntries(m_deployed.applyHessianPerSegmentRestlen(neg_deltap_padded, mask_dxdp).head(nd))));
             Eigen::VectorXd b_reduced = opt_2D.removeFixedEntries(m_flat.applyHessianPerSegmentRestlen(neg_deltap_padded, mask_dxdp).head(nd));
-            if (opt_2D.get_problem().hasLEQConstraint()) m_delta_x2d = opt_2D.extractFullSolution(opt_2D.kkt_solver(opt_2D.solver, b_reduced));
-            else                                         m_delta_x2d = opt_2D.extractFullSolution(opt_2D.solver.solve(b_reduced));
+            if (opt_2D.get_problem().hasLEQConstraint()) m_delta_x2d = opt_2D.extractFullSolution(opt_2D.kkt_solver(opt_2D.solver(), b_reduced));
+            else                                         m_delta_x2d = opt_2D.extractFullSolution(opt_2D.solver().solve(b_reduced));
 
             // Evaluate the energy at the 1st order-predicted equilibrium
             {
@@ -216,10 +216,10 @@ bool LinkageOptimization::m_updateEquilibria(const Eigen::Ref<const Eigen::Vecto
                     neg_d3E_delta_x2d = -extractDirectionalDerivative(m_diff_linkage_flat    .applyHessianPerSegmentRestlen(delta_edof_2d)).head(nd);
                 }
 
-                m_delta_delta_x3d = opt_3D.extractFullSolution(opt_3D.kkt_solver(opt_3D.solver, opt_3D.removeFixedEntries(neg_d3E_delta_x3d)));
+                m_delta_delta_x3d = opt_3D.extractFullSolution(opt_3D.kkt_solver(opt_3D.solver(), opt_3D.removeFixedEntries(neg_d3E_delta_x3d)));
                 b_reduced = opt_2D.removeFixedEntries(neg_d3E_delta_x2d);
-                if (opt_2D.get_problem().hasLEQConstraint()) m_delta_delta_x2d = opt_2D.extractFullSolution(opt_2D.kkt_solver(opt_2D.solver, b_reduced));
-                else                                         m_delta_delta_x2d = opt_2D.extractFullSolution(opt_2D.solver.solve(b_reduced));
+                if (opt_2D.get_problem().hasLEQConstraint()) m_delta_delta_x2d = opt_2D.extractFullSolution(opt_2D.kkt_solver(opt_2D.solver(), b_reduced));
+                else                                         m_delta_delta_x2d = opt_2D.extractFullSolution(opt_2D.solver().solve(b_reduced));
 
                 // Evaluate the energy at the 2nd order-predicted equilibrium, roll back to previous best if energy is higher.
                 {
@@ -237,8 +237,8 @@ bool LinkageOptimization::m_updateEquilibria(const Eigen::Ref<const Eigen::Vecto
 
         // Return to using the primary factorization, storing the committed
         // linkages' factorizations back in the stash for later use.
-        opt_2D.solver.swapStashedFactorization();
-        opt_3D.solver.swapStashedFactorization();
+        opt_2D.solver().swapStashedFactorization();
+        opt_3D.solver().swapStashedFactorization();
     }
 
     m_forceEquilibriumUpdate();
@@ -296,8 +296,8 @@ bool LinkageOptimization::m_updateAdjointState(const Eigen::Ref<const Eigen::Vec
         {
             auto &opt = getFlatOptimizer();
             Eigen::VectorXd b_reduced = opt.removeFixedEntries(m_apply_S_z_transpose(2 * m_apply_S_z(m_linesearch_flat.getDoFs())));
-            if (opt.get_problem().hasLEQConstraint()) m_y = opt.extractFullSolution(opt.kkt_solver(opt.solver, b_reduced));
-            else                                      m_y = opt.extractFullSolution(opt.solver.solve(b_reduced));
+            if (opt.get_problem().hasLEQConstraint()) m_y = opt.extractFullSolution(opt.kkt_solver(opt.solver(), b_reduced));
+            else                                      m_y = opt.extractFullSolution(opt.solver().solve(b_reduced));
         }
 
         // Adjoint solve for the target fitting objective on the deployed linkage
@@ -312,7 +312,7 @@ bool LinkageOptimization::m_updateAdjointState(const Eigen::Ref<const Eigen::Vec
         if (m_minAngleConstraint) {
             auto &opt = getFlatOptimizer();
             Eigen::VectorXd Hinv_b_reduced;
-            opt.solver.solve(opt.removeFixedEntries(m_minAngleConstraint->grad(m_linesearch_flat)), Hinv_b_reduced);
+            opt.solver().solve(opt.removeFixedEntries(m_minAngleConstraint->grad(m_linesearch_flat)), Hinv_b_reduced);
             if (opt.get_problem().hasLEQConstraint()) m_s_x = opt.extractFullSolution(opt.kkt_solver.solve(Hinv_b_reduced));
             else                                      m_s_x = opt.extractFullSolution(Hinv_b_reduced);
         }
@@ -395,7 +395,7 @@ Eigen::VectorXd LinkageOptimization::apply_hess(const Eigen::Ref<const Eigen::Ve
     auto &opt  = getDeployedOptimizer();
     const auto &prob3D = opt.get_problem();
     if (!prob3D.hasLEQConstraint()) throw std::runtime_error("The deployed linkage must have a linear equality constraint applied!");
-    auto &H_3D = opt.solver;
+    auto &H_3D = opt.solver();
 
     BENCHMARK_STOP_TIMER_SECTION("Preamble");
 
@@ -424,8 +424,8 @@ Eigen::VectorXd LinkageOptimization::apply_hess(const Eigen::Ref<const Eigen::Ve
         auto &opt_2D = getFlatOptimizer();
 
         Eigen::VectorXd b_reduced = opt_2D.removeFixedEntries(m_linesearch_flat.applyHessianPerSegmentRestlen(neg_deltap_padded, mask_dxdp).head(nd));
-        if (opt_2D.get_problem().hasLEQConstraint()) m_delta_x2d = opt_2D.extractFullSolution(opt_2D.kkt_solver(opt_2D.solver, b_reduced));
-        else                                         m_delta_x2d = opt_2D.extractFullSolution(opt_2D.solver.solve(b_reduced));
+        if (opt_2D.get_problem().hasLEQConstraint()) m_delta_x2d = opt_2D.extractFullSolution(opt_2D.kkt_solver(opt_2D.solver(), b_reduced));
+        else                                         m_delta_x2d = opt_2D.extractFullSolution(opt_2D.solver().solve(b_reduced));
     }
     catch (...) { m_delta_x2d.setZero(); }
 
@@ -505,8 +505,8 @@ Eigen::VectorXd LinkageOptimization::apply_hess(const Eigen::Ref<const Eigen::Ve
 
             BENCHMARK_START_TIMER_SECTION("KKT_solve");
             auto b = (m_minAngleConstraint->delta_grad(m_linesearch_flat, m_delta_x2d) - d3E_s.head(nd)).eval();
-            if (opt_2D.get_problem().hasLEQConstraint()) m_delta_s_x = opt_2D.extractFullSolution(opt_2D.kkt_solver(opt_2D.solver, opt_2D.removeFixedEntries(b)));
-            else                                         m_delta_s_x = opt_2D.extractFullSolution(opt_2D.solver.solve(opt_2D.removeFixedEntries(b)));
+            if (opt_2D.get_problem().hasLEQConstraint()) m_delta_s_x = opt_2D.extractFullSolution(opt_2D.kkt_solver(opt_2D.solver(), opt_2D.removeFixedEntries(b)));
+            else                                         m_delta_s_x = opt_2D.extractFullSolution(opt_2D.solver().solve(opt_2D.removeFixedEntries(b)));
             BENCHMARK_STOP_TIMER_SECTION("KKT_solve");
         }
 
@@ -528,8 +528,8 @@ Eigen::VectorXd LinkageOptimization::apply_hess(const Eigen::Ref<const Eigen::Ve
 
             BENCHMARK_START_TIMER_SECTION("KKT_solve");
             auto b = (m_apply_S_z_transpose(2 * m_apply_S_z(m_delta_x2d)) - d3E_y.head(nd)).eval();
-            if (opt_2D.get_problem().hasLEQConstraint()) m_delta_y = opt_2D.extractFullSolution(opt_2D.kkt_solver(opt_2D.solver, opt_2D.removeFixedEntries(b)));
-            else                                         m_delta_y = opt_2D.extractFullSolution(opt_2D.solver.solve(opt_2D.removeFixedEntries(b)));
+            if (opt_2D.get_problem().hasLEQConstraint()) m_delta_y = opt_2D.extractFullSolution(opt_2D.kkt_solver(opt_2D.solver(), opt_2D.removeFixedEntries(b)));
+            else                                         m_delta_y = opt_2D.extractFullSolution(opt_2D.solver().solve(opt_2D.removeFixedEntries(b)));
             BENCHMARK_STOP_TIMER_SECTION("KKT_solve");
         }
     }
