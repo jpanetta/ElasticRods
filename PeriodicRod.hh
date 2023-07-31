@@ -573,11 +573,7 @@ struct PeriodicRod_T {
         return W;
     }
 
-    Real link() const { 
-        Real tw_plus_wr_integer_part;
-        std::modf(twist() + writhe(), &tw_plus_wr_integer_part);
-        return tw_plus_wr_integer_part;
-    }
+    Real link() const { return std::floor(twist() + writhe()); }
 
     Rod rod;
 private:
