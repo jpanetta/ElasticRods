@@ -10,6 +10,3 @@
 [submodule "3rdParty/spectra"]
 	path = 3rdparty/spectra
 	url = https://github.com/yixuan/spectra
-[submodule "3rdParty/MeshFEM"]
-	path = 3rdparty/MeshFEM
-	url = https://github.com/MicheleVidulis/MeshFEM.git
